@@ -99,3 +99,20 @@ def registrar_ignorancia(mensaje_usuario):
     
     with open(archivo, "a", encoding="utf-8") as f:
         f.write(f"{mensaje_usuario}\n")
+
+        
+def listar_carreras(carreras_data):
+    """Genera una lista formateada de todas las carreras."""
+    lista = []
+    
+    # Crear una lista de nombres de carrera, excluyendo "Ingeniería en" para que quepa mejor.
+    nombres_carrera = [
+        carrera['nombre'].replace("Ingeniería en ", "").replace("Ingeniería ", "")
+        for carrera in carreras_data
+    ]
+    
+    # Formatear la lista con emojis
+    for i, nombre in enumerate(nombres_carrera):
+        lista.append(f"🎓 {i+1}. {nombre}")
+    
+    return "\n".join(lista)
