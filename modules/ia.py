@@ -11,14 +11,14 @@ import os
 # 🤖 CONFIGURACIÓN DE GEMINI (GOOGLE AI)
 # =========================================================
 # ¡SUSTITUYE ESTO CON TU CLAVE REAL!
-API_KEY = "AIzaSyCq5_N4rebajcW-eTn8FDcITrRnfSOa_Ho" 
+API_KEY = "AIzaSyDPDnvS1JJNfXvJUQyTYGTSu9kIEAgkjyo" 
 
 try:
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-pro')
     USAR_GEMINI = True
 except Exception as e:
-    print(f"⚠️ Error configurando Gemini: {e}")
+    print(f"⚠️ Error Gemini: {e}")
     USAR_GEMINI = False
 
 # =========================================================
