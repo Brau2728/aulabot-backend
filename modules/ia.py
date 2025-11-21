@@ -1,6 +1,6 @@
 import google.generativeai as genai
-from modules.funciones import listar_carreras, materias_por_semestre, materias_todas, registrar_ignorancia
-from modules.memoria import obtener_memoria, guardar_memoria, reset_memoria
+from modules.funciones import listar_carreras, materias_por_semestre, materias_todas, registrar_ignorancia, cargar_conocimiento_adquirido, guardar_nuevo_conocimiento
+from modules.memoria import obtener_memoria, guardar_memoria, reset_memoria, actualizar_conversacion
 from thefuzz import process, fuzz 
 import unicodedata
 import re
@@ -10,7 +10,6 @@ import os
 # =========================================================
 # 🤖 CONFIGURACIÓN DE GEMINI (GOOGLE AI)
 # =========================================================
-# Se lee del entorno. No pegar la llave aquí.
 API_KEY = os.getenv("GEMINI_API_KEY") 
 
 try:
@@ -21,11 +20,10 @@ try:
     else:
         USAR_GEMINI = False
 except Exception as e:
-    print(f"⚠️ Error Gemini: {e}")
     USAR_GEMINI = False
 
 # =========================================================
-# 1. Mapa de Conocimiento (INTENCIONES ACTUALIZADAS)
+# 1. Mapa de Conocimiento
 # =========================================================
 SINONIMOS_CARRERAS = {
     "Ingeniería en Sistemas Computacionales": ["sistemas", "systemas", "programacion", "computacion", "desarrollo", "software", "codigo", "isc"],
@@ -41,23 +39,62 @@ SINONIMOS_CARRERAS = {
 }
 
 INTENCIONES = {
-    "materias": ["materias", "materia", "clases", "asignaturas", "reticula", "plan", "curricula"],
-    "carreras_lista": ["carreras", "programas academicos", "que carreras tienen", "cuales son las carreras"], # NUEVA INTENCIÓN
-    "jefes": ["jefe de carrera", "jefe de division", "quien es el jefe"], # NUEVA INTENCIÓN
-    "costos": ["cuanto cuesta", "precio", "costo", "pagar", "inscripcion", "mensualidad", "dinero", "ficha", "pago"],
-    "ubicacion": ["donde estan", "ubicacion", "mapa", "direccion", "llegar", "localizacion", "domicilio"],
-    "saludo": ["hola", "buenos dias", "buenas", "que tal", "hey", "hi", "inicio", "comenzar"],
-    "directorio": ["directorio", "director general", "directivos", "cordinacion"],
-    "tramites": ["admision", "propedeutico", "examen", "becas", "servicio social", "residencias", "titulacion", "fechas de admision"],
-    "ayuda": ["que sabes hacer", "que puedes hacer", "ayuda", "instrucciones", "para que sirves", "menu", "opciones", "temas"],
-    "institucional": ["mision", "vision", "objetivos", "historia", "fundacion"], # NUEVA INTENCIÓN
-    "vida_estudiantil": ["deportes", "futbol", "cafeteria", "ingles", "centro de idiomas", "psicologia"],
-    "afirmacion": ["si", "claro", "por favor", "yes", "simon", "ok", "va", "me parece"],
-    "negacion": ["no", "nel", "asi dejalo", "gracias"]
+    "materias": ["materias", "materia", "clases", "asignaturas", "reticula", "plan", "curricula", "qué lleva", "qué se estudia", "plan de estudios"],
+    "carreras_lista": ["carreras", "programas academicos", "que carreras tienen", "cuales son las carreras", "qué ingenierías", "opciones de estudio"],
+    "jefes": ["jefe de carrera", "jefe de division", "quien es el jefe", "director de carrera", "coordinador"], 
+    "costos": ["cuanto cuesta", "precio", "costo", "pagar", "inscripcion", "mensualidad", "dinero", "ficha", "pago", "colegiatura"],
+    "ubicacion": ["donde estan", "ubicacion", "mapa", "direccion", "llegar", "localizacion", "domicilio", "donde queda"],
+    "saludo": ["hola", "buenos dias", "buenas", "que tal", "hey", "hi", "inicio", "comenzar", "buenas tardes", "buenas noches"],
+    "directorio": ["director", "jefe", "coordinador", "quien es", "encargado", "subdirector", "autoridades"],
+    "tramites": ["admision", "propedeutico", "examen", "becas", "servicio social", "residencias", "titulacion", "fechas", "convocatoria", "trámites"],
+    "ayuda": ["que sabes hacer", "que puedes hacer", "ayuda", "instrucciones", "para que sirves", "menu", "opciones", "temas", "qué preguntar"],
+    "institucional": ["mision", "vision", "objetivos", "historia", "fundacion", "valores", "filosofia"],
+    "vida_estudiantil": ["deportes", "futbol", "cafeteria", "ingles", "centro de idiomas", "psicologia", "actividades", "clubes"],
+    "afirmacion": ["si", "claro", "por favor", "yes", "simon", "ok", "va", "me parece", "correcto", "adelante"],
+    "negacion": ["no", "nel", "asi dejalo", "gracias", "no gracias", "en otro momento"]
 }
 
 # =========================================================
-# 2. Funciones Auxiliares (mantienen su función)
+# 2. Sistema de Respuestas Naturales
+# =========================================================
+RESPUESTAS_AFIRMATIVAS = [
+    "¡Claro! Aquí tienes...",
+    "Perfecto, te muestro...", 
+    "¡Excelente! Aquí está...",
+    "De acuerdo, aquí lo tienes...",
+    "¡Genial! Esta es la información...",
+    "Por supuesto, aquí está lo que necesitas...",
+    "¡Listo! Te comparto la información..."
+]
+
+RESPUESTAS_NEGATIVAS = [
+    "De acuerdo, ¿en qué más puedo ayudarte?",
+    "Entendido, dime qué otra cosa necesitas saber",
+    "¡Claro! Cambiemos de tema, ¿qué te interesa?",
+    "Perfecto, ¿qué otro tema quieres consultar?",
+    "No hay problema, estoy aquí para lo que necesites",
+    "Como prefieras, ¿en qué otro aspecto te puedo orientar?"
+]
+
+TRANSICIONES_TEMA = [
+    "\n\n¿Necesitas algo más sobre este tema?",
+    "\n\n¿Te quedó claro? Puedes preguntarme más detalles.",
+    "\n\n¿En qué más puedo orientarte sobre esto?",
+    "\n\n¿Hay algo específico que quieras saber más?",
+    "\n\n¿Te ayudo con algo más relacionado?"
+]
+
+def obtener_respuesta_afirmativa():
+    return random.choice(RESPUESTAS_AFIRMATIVAS)
+
+def obtener_respuesta_negativa():
+    return random.choice(RESPUESTAS_NEGATIVAS)
+
+def obtener_transicion():
+    return random.choice(TRANSICIONES_TEMA)
+
+# =========================================================
+# 3. Funciones Auxiliares Mejoradas
 # =========================================================
 def limpiar_texto(texto):
     texto = texto.lower()
@@ -71,102 +108,145 @@ def detectar_mejor_coincidencia(texto_usuario, diccionario):
         if score > mejor_score:
             mejor_score = score
             mejor_opcion = clave
-    return mejor_opcion if mejor_score >= 70 else None
+    return mejor_opcion if mejor_score >= 65 else None  # Bajamos el threshold para mayor flexibilidad
 
 def consultar_gemini(contexto, pregunta_usuario):
-    """
-    Toma datos duros (contexto) y le pide a Gemini que redacte una respuesta bonita.
-    """
     if not USAR_GEMINI:
         return contexto 
 
     prompt = f"""
-    Eres AulaBot, el asistente virtual amigable del Instituto Tecnológico Superior de Ciudad Hidalgo (ITSCH).
-    
+    Eres AulaBot, el asistente virtual amigable del ITSCH.
     INFORMACIÓN OFICIAL (Contexto):
     "{contexto}"
-    
     USUARIO DICE:
     "{pregunta_usuario}"
     
     TU TAREA:
-    Responde al usuario basándote EXCLUSIVAMENTE en la Información Oficial.
-    - Sé amable, usa emojis 🎓✨.
-    - Si la información es una lista, mantenla ordenada y legible.
-    - NO inventes datos que no estén en la Información Oficial.
+    Responde al usuario basándote EXCLUSIVAMENTE en la Información Oficial. 
+    - Sé amable, natural y conversacional
+    - Usa emojis apropiados 🎓✨🤔
+    - Si es una lista o info crítica (costos, trámites), mantenla clara y legible
+    - Responde como si estuvieras teniendo una conversación normal
     """
-    
     try:
-        response = model.generate_content(prompt)
+        response = genai.GenerativeModel('gemini-pro').generate_content(prompt)
         return response.text
-    except:
-        return contexto 
+    except Exception as e:
+        return contexto
+
+def detectar_intenciones_multiples(mensaje_limpio):
+    """Detecta múltiples intenciones en un mensaje"""
+    intenciones_detectadas = []
+    for intencion, palabras in INTENCIONES.items():
+        if any(palabra in mensaje_limpio for palabra in palabras):
+            intenciones_detectadas.append(intencion)
+    return intenciones_detectadas
+
+def detectar_semestre_natural(mensaje_limpio):
+    """Detecta números de semestre en texto natural"""
+    numeros_texto = {
+        'primero': 1, 'segundo': 2, 'tercero': 3, 'cuarto': 4, 
+        'quinto': 5, 'sexto': 6, 'séptimo': 7, 'octavo': 8, 'noveno': 9,
+        '1ro': 1, '2do': 2, '3ro': 3, '4to': 4, '5to': 5, '6to': 6, '7mo': 7, '8vo': 8, '9no': 9
+    }
+    
+    # Buscar en texto
+    for texto, num in numeros_texto.items():
+        if texto in mensaje_limpio:
+            return num
+    
+    # Buscar números
+    nums = re.findall(r'\d+', mensaje_limpio)
+    if nums:
+        return int(nums[0])
+    
+    return None
 
 # =========================================================
-# 3. Lógica Principal (Híbrida)
+# 4. Lógica Principal Mejorada
 # =========================================================
 def generar_respuesta(mensaje, user_id, general, carreras, materias):
     mensaje_limpio = limpiar_texto(mensaje)
     memoria = obtener_memoria(user_id)
+    intencion = detectar_mejor_coincidencia(mensaje_limpio, INTENCIONES)
+    intenciones_multiples = detectar_intenciones_multiples(mensaje_limpio)
 
     # --- Comandos de Reinicio ---
-    if 'reiniciar' in mensaje_limpio or 'salir' in mensaje_limpio:
+    if any(palabra in mensaje_limpio for palabra in ['reiniciar', 'salir', 'empezar de nuevo', 'otra vez']):
         reset_memoria(user_id)
         return "🔄 Conversación reiniciada. ¿En qué te ayudo ahora?"
 
-    # --- Detección de Intención ---
-    intencion = detectar_mejor_coincidencia(mensaje_limpio, INTENCIONES)
+    # --- Manejo de Múltiples Intenciones ---
+    if len(intenciones_multiples) > 1:
+        if "saludo" in intenciones_multiples:
+            # Quitar saludo para manejar la otra intención
+            intenciones_multiples.remove("saludo")
+            if intenciones_multiples:
+                respuesta = "¡Hola! 👋 Veo que tienes varias preguntas. "
+                respuesta += "Para darte la mejor respuesta, vamos de una a la vez. "
+                respuesta += f"¿Podrías contarme más sobre lo que necesitas saber de {' o '.join(intenciones_multiples)}?"
+                actualizar_conversacion(user_id, mensaje, respuesta)
+                return respuesta
 
-    # --- 1. INTENCIÓN DE AYUDA (MENÚ COMPLETO) ---
+    # --- 1. INTENCIÓN DE AYUDA (MENÚ MEJORADO) ---
     if intencion == "ayuda":
-        return (
-            "🤖 **Menú de Capacidades AulaBot**\n\n"
-            "¡Puedo informarte sobre **ABSOLUTAMENTE TODO** del ITSCH! ✨\n\n"
-            "🎓 **Información Académica**\n"
-            "   - Escribe **'Carreras'** para ver la lista completa.\n"
-            "   - Pregunta por **'Materias'** de una carrera específica.\n"
-            "\n"
-            "🏛️ **Información Institucional**\n"
-            "   - **'Misión'**, **'Visión'**, **'Historia'** o **'Objetivos'**.\n"
-            "   - **'Fechas de Admisión'** o **'Trámites'** (becas, titulación).\n"
-            "   - **'Directorio'** o **'Jefe de Carrera'** (ej: 'Jefe de Sistemas').\n"
-            "\n"
-            "💵 **Información Administrativa**\n"
-            "   - Pregunta por **'Costos'**, **'Inscripción'** o **'Ficha'**.\n"
-            "\n"
-            "⚽ **Vida Estudiantil**\n"
-            "   - Pregunta por **'Deportes'**, **'Cafeterías'** (horarios) o **'Inglés'**.\n"
-            "\n"
-            "¡Dime cuál es tu duda!"
+        respuesta = (
+            "¡Hola! Soy AulaBot 🤖, tu asistente del ITSCH. Puedo ayudarte con:\n\n"
+            "🎓 **Información académica:**\n"
+            "   - Carreras disponibles y sus detalles\n"  
+            "   - Planes de estudio y materias\n"
+            "   - Horarios y créditos\n\n"
+            "🏛️ **Información general:**\n"
+            "   - Costos y trámites\n"
+            "   - Directorio de personal\n"
+            "   - Misión y visión\n\n"
+            "💡 **Solo pregúntame cosas como:**\n"
+            "   - '¿Qué carreras tienen?'\n"
+            "   - 'Cuéntame de Sistemas Computacionales'\n" 
+            "   - '¿Qué materias lleva Mecatrónica?'\n"
+            "   - '¿Cuánto cuesta la inscripción?'\n\n"
+            "¿Por dónde quieres empezar? 😊"
         )
-    
-    # --- 2. LISTADO DE CARRERAS (Nueva Intención) ---
-    if intencion == "carreras_lista":
-        # Usamos la nueva función para listar las carreras
-        lista = listar_carreras(carreras) 
-        respuesta = f"¡Claro! El ITSCH ofrece las siguientes 10 carreras:\n\n{lista}\n\nEscribe el **nombre de la carrera** (ej: 'Sistemas', 'Nano') para conocer sus detalles."
-        # No usamos Gemini aquí para que la lista salga rápida y limpia.
+        actualizar_conversacion(user_id, mensaje, respuesta)
         return respuesta
+    
+    # --- 2. SALUDO NATURAL ---
+    if intencion == "saludo":
+        saludos = [
+            "¡Hola! 👋 Soy AulaBot, tu asistente del ITSCH. ¿En qué puedo ayudarte hoy?",
+            "¡Buenas! 🤖 ¿Qué te gustaría saber sobre el ITSCH?",
+            "¡Hola! 🎓 Estoy aquí para resolver tus dudas sobre el instituto. ¿Por dónde empezamos?",
+            "¡Hey! 👋 ¿En qué puedo orientarte hoy?"
+        ]
+        respuesta = random.choice(saludos)
+        actualizar_conversacion(user_id, mensaje, respuesta)
+        return respuesta
+    
+    # --- 3. LISTADO DE CARRERAS MEJORADO ---
+    if intencion == "carreras_lista":
+        lista = listar_carreras(carreras)
+        respuesta_base = f"¡Claro! El ITSCH ofrece estas ingenierías:\n\n{lista}\n\n¿Te interesa conocer más sobre alguna en particular? Solo dime su nombre (ej: 'Sistemas', 'Mecatrónica')."
+        respuesta_final = consultar_gemini(respuesta_base, "Responde de forma amable y entusiasta sobre las carreras disponibles.")
+        actualizar_conversacion(user_id, mensaje, respuesta_final)
+        return respuesta_final
 
-
-    # --- 3. BÚSQUEDA DE JEFE DE CARRERA ESPECÍFICO ---
+    # --- 4. BÚSQUEDA DE JEFE DE CARRERA ESPECÍFICO ---
     if intencion == "jefes":
-        # Primero, intenta encontrar la carrera en el mensaje del usuario
         posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
         
         if posible_carrera:
             info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
             if info and info.get('jefe_division'):
                 respuesta_jefe = f"El Jefe de División de {info['nombre']} es: {info['jefe_division']}."
-                return consultar_gemini(respuesta_jefe, "Responde este dato de Jefe de Carrera de forma amable y directa.")
+                respuesta_final = consultar_gemini(respuesta_jefe, "Responde este dato de Directorio de forma amable y directa.")
+                actualizar_conversacion(user_id, mensaje, respuesta_final)
+                return respuesta_final
         
-        # Si no encontró una carrera, intenta buscar el directorio general en el CSV
-        if mejor_score_general > 85 and mejor_match_general:
-            return consultar_gemini(mejor_match_general, mensaje)
+        respuesta = "Para decirte quién es el Jefe, necesito saber de qué carrera me hablas. Por ejemplo: 'Jefe de Sistemas' o 'Quién es el jefe de Industrial' 🏛️"
+        actualizar_conversacion(user_id, mensaje, respuesta)
+        return respuesta
 
-        return "Para decirte quién es el Jefe, necesito saber de qué carrera me hablas (ej: 'Jefe de Sistemas') o pregunta por el Director General. 🏛️"
-
-    # --- 4. Información de Carreras (Nueva Selección - Descripción y Jefe) ---
+    # --- 5. INFORMACIÓN DE CARRERAS (CONVERSACIONAL) ---
     posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
     if posible_carrera:
         memoria['carrera_seleccionada'] = posible_carrera
@@ -175,47 +255,54 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         
         info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
         if info:
-            # Incluimos más detalles para la respuesta
+            # Respuesta más conversacional y natural
             contexto_carrera = (
-                f"Carrera: {info['nombre']} ({info['clave']}). "
-                f"Jefe de División: {info.get('jefe_division', 'N/A')}. "
-                f"Descripción: {info['descripcion']}. "
-                f"Perfil Ingreso: {info.get('perfil_ingreso', '')}. "
-                f"Campo Laboral: {info.get('perfil_egreso', '')}."
+                f"¡Excelente elección! 🎓 **{info['nombre']}** ({info['clave']})\n\n"
+                f"📖 **Qué aprenderás:** {info['descripcion']}\n\n"
+                f"👨‍🏫 **Jefe de división:** {info.get('jefe_division', 'Por asignar')}\n"
+                f"⏱️ **Duración:** {info['duracion']}\n\n"
+                f"¿Te gustaría conocer las materias que llevarás durante la carrera?"
             )
-            # Preguntamos si quiere ver materias.
-            return consultar_gemini(contexto_carrera, "Háblame de esta carrera (descripción, jefe y perfiles) y pregúntame si quiere ver **TODAS** sus materias.")
+            actualizar_conversacion(user_id, mensaje, contexto_carrera)
+            return contexto_carrera
 
-    # --- 5. Contexto Activo (Materias - Muestra TODAS por defecto) ---
+    # --- 6. MANEJO DE MATERIAS MEJORADO ---
     if memoria.get('carrera_seleccionada'):
         carrera_sel = memoria['carrera_seleccionada']
         
-        # Si pide materias explícitamente o afirma
-        if intencion == "materias" or "ver materias" in mensaje_limpio or "todas" in mensaje_limpio:
+        # Detectar si quiere ver materias de forma natural
+        palabras_materias = ["materias", "clases", "asignaturas", "qué lleva", "qué se estudia", "plan de estudios", "ver materias", "temas"]
+        if any(palabra in mensaje_limpio for palabra in palabras_materias) or intencion in ["materias", "afirmacion"]:
             memoria['modo_materias'] = True
             guardar_memoria(user_id, memoria)
             
-            # ¡Se muestran TODAS las materias sin preguntar el semestre!
             respuesta_materias = materias_todas(carrera_sel, materias)
-            return f"📂 ¡Aquí tienes **TODAS** las materias de **{carrera_sel}**!:\n\n{respuesta_materias}\n\nSi quieres filtrar por semestre, solo escribe el número (ej: '5')."
+            respuesta = f"{obtener_respuesta_afirmativa()} el plan completo de **{carrera_sel}**:\n\n{respuesta_materias}\n\n¿Te interesa ver las materias de algún semestre en particular? Solo dime el número (ej: '3' o 'quinto semestre')."
+            actualizar_conversacion(user_id, mensaje, respuesta)
+            return respuesta
         
-        # Si ya está en modo materias, busca por semestre o por materia específica
+        # Si está en modo materias, busca por semestre
         if memoria.get('modo_materias'):
-            # Búsqueda por semestre (número)
-            nums = re.findall(r'\d+', mensaje_limpio)
-            if nums:
-                return materias_por_semestre(carrera_sel, int(nums[0]), materias)
+            semestre = detectar_semestre_natural(mensaje_limpio)
             
-            # Búsqueda materia específica
+            if semestre and 1 <= semestre <= 9:
+                respuesta = materias_por_semestre(carrera_sel, semestre, materias)
+                respuesta += obtener_transicion()
+                actualizar_conversacion(user_id, mensaje, respuesta)
+                return respuesta
+            
+            # Búsqueda de materia específica
             nombres = [m['materia'] for m in materias if m['carrera'] == carrera_sel]
             match, score = process.extractOne(mensaje_limpio, nombres, scorer=fuzz.token_set_ratio) if nombres else (None, 0)
             
             if score > 75:
                 m = next(x for x in materias if x['materia'] == match and x['carrera'] == carrera_sel)
-                datos_crudos = f"Materia: {m['materia']}, Clave: {m['clave']}, Semestre: {m['semestre']}, Créditos: {m.get('creditos','N/A')}, Prerrequisito: {m.get('prerrequisito','Ninguno')}."
-                return consultar_gemini(datos_crudos, "¿Qué onda con esta materia?")
-    
-    # --- 6. Preguntas Generales (CSV -> Gemini) ---
+                datos_crudos = f"Materia: {m['materia']}, Clave: {m['clave']}, Semestre: {m['semestre']}, Horas: {m.get('horas','N/A')}, Prerrequisito: {m.get('prerrequisito','Ninguno')}."
+                respuesta = consultar_gemini(datos_crudos, f"Explica esta materia de forma amigable y útil para el estudiante.")
+                actualizar_conversacion(user_id, mensaje, respuesta)
+                return respuesta
+
+    # --- 7. PREGUNTAS GENERALES MEJORADAS ---
     mejor_match_general = None
     mejor_score_general = 0
     
@@ -225,24 +312,46 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             mejor_score_general = score
             mejor_match_general = item['respuesta']
     
-    if mejor_score_general > 85:
-        # Usamos Gemini para dar formato a Misión, Visión, Cafeterías, Inglés, Admisión, etc.
-        return consultar_gemini(mejor_match_general, mensaje)
+    if mejor_score_general > 80:  # Bajamos el threshold para mayor flexibilidad
+        respuesta = consultar_gemini(mejor_match_general, mensaje)
+        # Agregar transición si cambió de tema
+        if memoria.get('ultimo_tema') != 'general':
+            respuesta += obtener_transicion()
+            memoria['ultimo_tema'] = 'general'
+            guardar_memoria(user_id, memoria)
+        
+        actualizar_conversacion(user_id, mensaje, respuesta)
+        return respuesta
 
-    # --- 7. Chat Casual (Gemini Puro - Fallback) ---
-    registrar_ignorancia(mensaje_limpio) 
+    # --- 8. FALLBACK MEJORADO ---
+    registrar_ignorancia(mensaje_limpio)
     
-    prompt_fallback = f"""
-    Eres AulaBot del ITSCH. El usuario dijo: "{mensaje}".
-    No encontraste información específica en tu base de datos oficial sobre esto.
-    Responde amablemente.
-    Si es un saludo o charla casual, conversa brevemente.
-    Si es una pregunta técnica de la escuela que NO sabes, di: "Ese dato específico no lo tengo a la mano, pero puedo averiguarlo en Servicios Escolares."
-    """
-    try:
-        if USAR_GEMINI:
-            return model.generate_content(prompt_fallback).text
-    except:
-        pass
+    # Intentar con Gemini si está disponible
+    if USAR_GEMINI:
+        try:
+            prompt_fallback = f"""
+            Eres AulaBot, asistente virtual del ITSCH. El usuario preguntó: '{mensaje}'.
+            
+            Si es una pregunta sobre educación superior, ingenierías, trámites escolares, vida estudiantil o temas relacionados con educación técnica:
+            - Responde de manera amable y útil
+            - Si no tienes información específica, sugiere consultar en servicios escolares
+            - Mantén un tono conversacional y usa emojis apropiados
+            
+            Si es completamente fuera de contexto, responde amablemente redirigiendo al tema académico.
+            """
+            respuesta = consultar_gemini(prompt_fallback, mensaje)
+            actualizar_conversacion(user_id, mensaje, respuesta)
+            return respuesta
+        except:
+            pass
 
-    return "Mmm, esa no me la sé todavía. 😅 Pero ya anoté tu duda para investigarla."
+    # Respuesta por defecto más amigable
+    respuestas_fallback = [
+        "Mmm, esa pregunta es interesante. 😅 Aún no tengo esa información específica, pero la anotaré para investigarla. ¿Puedo ayudarte con algo más del ITSCH?",
+        "¡Vaya! Esa no me la sé todavía. 🤔 Pero puedo ayudarte con información sobre carreras, materias, costos y trámites del instituto.",
+        "Ese dato específico no lo tengo a la mano. 😊 ¿Te puedo ayudar con información académica o sobre los servicios del ITSCH?"
+    ]
+    
+    respuesta = random.choice(respuestas_fallback)
+    actualizar_conversacion(user_id, mensaje, respuesta)
+    return respuesta
