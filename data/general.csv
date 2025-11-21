@@ -1,0 +1,14 @@
+palabra_clave,categoria,respuesta
+hola,saludo,¡Hola! Bienvenido al Instituto Tecnológico. ¿Qué te gustaría saber? Puedes preguntar por carreras, ubicación, contacto o horarios.
+buenas,saludo,¡Buenas! ¿Qué información necesitas del Instituto Tecnológico?
+horarios,info,Los horarios pueden variar por carrera y semestre. ¿Sobre qué carrera te gustaría saber?
+ubicacion,info,Nos ubicamos en Av. Principal 123, Ciudad Universitaria. ¿Quieres indicaciones o mapa?
+donde estan,info,Estamos ubicados en Av. Principal 123, Ciudad Universitaria.
+telefono,info,Nuestro teléfono de contacto es (000) 123 4567.
+contacto,info,Puedes comunicarte al (000) 123 4567 o enviar un correo a contacto@tecnologico.edu.mx.
+nombre,info,Somos el Instituto Tecnológico Superior de Ejemplo.
+que carreras tienen,consulta_carreras,Ofrecemos distintas ingenierías. ¿Te interesa alguna en particular? (Puedes decir: Ingeniería en Sistemas, Ingeniería Industrial, etc.)
+carreras,consulta_carreras,Contamos con diversas carreras. ¿Cuál te interesa?
+cuando inician clases,info,Las clases inician al inicio del próximo ciclo escolar. ¿Quieres saber fechas específicas de una carrera?
+inscripciones,info,Las inscripciones abren cada semestre. ¿Quieres requisitos de ingreso?
+requisitos,info,Los requisitos dependen de la carrera. ¿Qué área te interesa?
