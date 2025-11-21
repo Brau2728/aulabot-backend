@@ -22,27 +22,32 @@ except Exception as e:
     USAR_GEMINI = False
 
 # =========================================================
-# 1. Mapa de Conocimiento Local
+# 1. Mapa de Conocimiento (Sinónimos y Errores Comunes)
 # =========================================================
 SINONIMOS_CARRERAS = {
-    "Ingeniería en Sistemas Computacionales": ["sistemas", "programacion", "software", "isc", "dev"],
-    "Ingeniería en Gestión Empresarial": ["gestion", "administracion", "negocios", "ige"],
-    "Ingeniería Industrial": ["industrial", "procesos", "produccion", "ii"],
-    "Ingeniería Mecatrónica": ["mecatronica", "robotica", "automatizacion", "im"],
+    "Ingeniería en Sistemas Computacionales": ["sistemas", "systemas", "programacion", "computacion", "desarrollo", "software", "codigo", "isc"],
+    "Ingeniería en Gestión Empresarial": ["gestion", "empresas", "administracion", "negocios", "ige", "gerencia"],
+    "Ingeniería Industrial": ["industrial", "industria", "procesos", "fabrica", "produccion", "ii"],
+    "Ingeniería Mecatrónica": ["mecatronica", "meca", "robotica", "automatizacion", "im"],
     "Ingeniería Bioquímica": ["bioquimica", "biologia", "alimentos", "ibq"],
     "Ingeniería en Nanotecnología": ["nanotecnologia", "nano", "materiales", "ina"],
-    "Ingeniería en Innovación Agrícola Sustentable": ["agricola", "agronomia", "campo", "iias"],
-    "Ingeniería en Tecnologías de la Información y Comunicaciones": ["tics", "redes", "telecom", "itic"],
-    "Ingeniería en Animación Digital y Efectos Visuales": ["animacion", "digital", "3d", "iadev"],
-    "Ingeniería en Sistemas Automotrices": ["automotriz", "autos", "mecanica", "isau"]
+    "Ingeniería en Innovación Agrícola Sustentable": ["agricola", "agronomia", "campo", "cultivos", "iias"],
+    "Ingeniería en Tecnologías de la Información y Comunicaciones": ["tics", "tic", "redes", "telecom", "itic"],
+    "Ingeniería en Animación Digital y Efectos Visuales": ["animacion", "digital", "3d", "visuales", "iadev"],
+    "Ingeniería en Sistemas Automotrices": ["automotriz", "autos", "coches", "mecanica automotriz", "isau"]
 }
 
 INTENCIONES = {
-    "materias": ["materias", "plan", "reticula", "clases"],
-    "costos": ["cuanto cuesta", "precio", "costo", "pago", "inscripcion"],
-    "ubicacion": ["donde estan", "ubicacion", "direccion", "llegar"],
-    "saludo": ["hola", "buenas", "que tal", "inicio"],
-    "ayuda": ["ayuda", "que haces", "menu", "opciones"]
+    "materias": ["materias", "materia", "clases", "asignaturas", "reticula", "plan", "curricula"],
+    "costos": ["cuanto cuesta", "precio", "costo", "pagar", "inscripcion", "mensualidad", "dinero", "ficha", "pago"],
+    "ubicacion": ["donde estan", "ubicacion", "mapa", "direccion", "llegar", "localizacion", "domicilio"],
+    "saludo": ["hola", "buenos dias", "buenas", "que tal", "hey", "hi", "inicio", "comenzar"],
+    "directorio": ["director", "jefe", "coordinador", "quien es", "encargado", "subdirector"],
+    "tramites": ["admision", "propedeutico", "examen", "becas", "servicio social", "residencias", "titulacion"],
+    "ayuda": ["que sabes hacer", "que puedes hacer", "ayuda", "instrucciones", "para que sirves", "menu", "opciones", "temas"],
+    "vida_estudiantil": ["deportes", "futbol", "cafeteria", "ingles", "centro de idiomas", "psicologia"],
+    "afirmacion": ["si", "claro", "por favor", "yes", "simon", "ok", "va", "me parece"],
+    "negacion": ["no", "nel", "asi dejalo", "gracias"]
 }
 
 # =========================================================
@@ -64,14 +69,13 @@ def detectar_mejor_coincidencia(texto_usuario, diccionario):
 
 def consultar_gemini(contexto, pregunta_usuario):
     """
-    Función mágica: Toma datos duros (contexto) y le pide a Gemini
-    que redacte una respuesta bonita para el usuario.
+    Toma datos duros (contexto) y le pide a Gemini que redacte una respuesta bonita.
     """
     if not USAR_GEMINI:
         return contexto # Fallback si no hay internet/key
 
     prompt = f"""
-    Eres AulaBot, el asistente virtual amigable y profesional del Instituto Tecnológico Superior de Ciudad Hidalgo (ITSCH).
+    Eres AulaBot, el asistente virtual amigable del Instituto Tecnológico Superior de Ciudad Hidalgo (ITSCH).
     
     INFORMACIÓN OFICIAL (Contexto):
     "{contexto}"
@@ -83,7 +87,6 @@ def consultar_gemini(contexto, pregunta_usuario):
     Responde al usuario basándote EXCLUSIVAMENTE en la Información Oficial.
     - Sé amable, usa emojis 🎓✨.
     - Si la información es una lista larga, resúmela o dales formato bonito.
-    - Si el usuario saluda, responde casualmente.
     - NO inventes datos que no estén en la Información Oficial.
     """
     
@@ -91,7 +94,7 @@ def consultar_gemini(contexto, pregunta_usuario):
         response = model.generate_content(prompt)
         return response.text
     except:
-        return contexto # Si falla Gemini, devolvemos el texto crudo
+        return contexto 
 
 # =========================================================
 # 3. Lógica Principal (Híbrida)
@@ -100,26 +103,39 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     mensaje_limpio = limpiar_texto(mensaje)
     memoria = obtener_memoria(user_id)
 
-    # --- Reinicio ---
-    if 'reiniciar' in mensaje_limpio:
+    # --- Comandos de Reinicio ---
+    if 'reiniciar' in mensaje_limpio or 'salir' in mensaje_limpio:
         reset_memoria(user_id)
-        return "🔄 Memoria reiniciada. ¡Empecemos de nuevo!"
+        return "🔄 Conversación reiniciada. ¿En qué te ayudo ahora?"
 
     # --- Detección de Intención ---
     intencion = detectar_mejor_coincidencia(mensaje_limpio, INTENCIONES)
 
-    # --- 1. CONTEXTO ACTIVO (Prioridad Alta) ---
+    # --- 1. INTENCIÓN DE AYUDA (MENÚ) ---
+    if intencion == "ayuda":
+        return (
+            "🤖 **Menú de Capacidades AulaBot**\n\n"
+            "Puedo informarte sobre todo esto:\n\n"
+            "🎓 **Carreras:** Escribe 'Sistemas', 'Mecatrónica', 'Gestión'...\n"
+            "📘 **Materias:** Dentro de una carrera, pide 'ver materias'.\n"
+            "💵 **Pagos:** Pregunta por 'Costos', 'Inscripción' o 'Ficha'.\n"
+            "🏛 **Directorio:** '¿Quién es el director?', 'Jefe de Industrial'.\n"
+            "⚽ **Vida Estudiantil:** 'Deportes', 'Cafetería', 'Inglés'.\n"
+            "📅 **Trámites:** 'Fechas de admisión', 'Propedéutico', 'Becas'.\n\n"
+            "¡Toca un tema o escribe tu duda!"
+        )
+
+    # --- 2. CONTEXTO ACTIVO (Prioridad Alta) ---
     if memoria.get('carrera_seleccionada'):
         carrera_sel = memoria['carrera_seleccionada']
         
-        # Si pide materias explícitamente
-        if intencion == "materias" or "ver" in mensaje_limpio:
+        # Si pide materias explícitamente o afirma
+        if intencion == "materias" or intencion == "afirmacion" or "ver" in mensaje_limpio:
             memoria['modo_materias'] = True
             guardar_memoria(user_id, memoria)
             return f"📂 Entendido. ¿Quieres ver las materias de **{carrera_sel}**? Escribe 'todas' o un semestre (ej. '5')."
 
         if memoria.get('modo_materias'):
-            # Las listas de materias NO las pasamos por Gemini porque son datos puros
             if 'todas' in mensaje_limpio:
                 return materias_todas(carrera_sel, materias)
             
@@ -133,12 +149,11 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             
             if score > 75:
                 m = next(x for x in materias if x['materia'] == match and x['carrera'] == carrera_sel)
-                # Aquí SÍ usamos Gemini para explicar la materia bonito
+                # Usamos Gemini para explicar la materia bonito
                 datos_crudos = f"Materia: {m['materia']}, Clave: {m['clave']}, Semestre: {m['semestre']}, Créditos: {m.get('creditos','N/A')}, Prerrequisito: {m.get('prerrequisito','Ninguno')}."
                 return consultar_gemini(datos_crudos, "¿Qué onda con esta materia?")
 
-    # --- 2. Preguntas Generales (CSV -> Gemini) ---
-    # Buscamos en tu CSV enciclopédico
+    # --- 3. Preguntas Generales (CSV -> Gemini) ---
     mejor_match_general = None
     mejor_score_general = 0
     
@@ -149,11 +164,9 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             mejor_match_general = item['respuesta']
     
     if mejor_score_general > 85:
-        # ¡AQUÍ ESTÁ EL TRUCO!
-        # En lugar de devolver el texto aburrido del CSV, se lo damos a Gemini
         return consultar_gemini(mejor_match_general, mensaje)
 
-    # --- 3. Información de Carreras (CSV -> Gemini) ---
+    # --- 4. Información de Carreras (CSV -> Gemini) ---
     posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
     if posible_carrera:
         memoria['carrera_seleccionada'] = posible_carrera
@@ -162,7 +175,6 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         
         info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
         if info:
-            # Creamos un texto base con todos los datos
             contexto_carrera = (
                 f"Carrera: {info['nombre']} ({info['clave']}). "
                 f"Descripción: {info['descripcion']}. "
@@ -171,13 +183,10 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
                 f"Campo Laboral: {info.get('perfil_egreso', '')}. "
                 f"Especialidad: {info.get('especialidad', '')}."
             )
-            # Le pedimos a Gemini que lo presente como un experto
             return consultar_gemini(contexto_carrera, "Háblame de esta carrera y pregúntame si quiero ver materias.")
 
-    # --- 4. Chat Casual (Gemini Puro) ---
-    # Si no encontramos nada en la base de datos, dejamos que Gemini responda
-    # PERO con instrucciones de seguridad para no alucinar cosas de la escuela.
-    registrar_ignorancia(mensaje_limpio) # Seguimos guardando lo que no sabemos
+    # --- 5. Chat Casual (Gemini Puro - Fallback) ---
+    registrar_ignorancia(mensaje_limpio) 
     
     prompt_fallback = f"""
     Eres AulaBot del ITSCH. El usuario dijo: "{mensaje}".
