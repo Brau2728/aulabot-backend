@@ -1,14 +1,19 @@
 import csv
+import json  # <--- IMPORTANTE
+import os    # <--- IMPORTANTE
 
 # -----------------------------
 # Leer CSV
 # -----------------------------
 def leer_csv(nombre_archivo):
     datos = []
-    with open(nombre_archivo, newline='', encoding='utf-8') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for fila in reader:
-            datos.append(fila)
+    try:
+        with open(nombre_archivo, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for fila in reader:
+                datos.append(fila)
+    except FileNotFoundError:
+        print(f"⚠️ Advertencia: No se encontró {nombre_archivo}")
     return datos
 
 # -----------------------------
@@ -30,13 +35,16 @@ def materias_todas(carrera, materias):
     materias_carrera.sort(key=lambda x: int(x['semestre']))
 
     texto = ""
-    for sem in sorted(set(int(m['semestre']) for m in materias_carrera)):
+    # Obtenemos semestres únicos ordenados
+    semestres = sorted(set(int(m['semestre']) for m in materias_carrera))
+    
+    for sem in semestres:
         texto += f"Semestre {sem}:\n"
         for m in materias_carrera:
             if int(m['semestre']) == sem:
                 texto += f"  - {m['materia']} ({m['clave']}) - {m['horas']} hrs\n"
         texto += "\n"
-    texto += "Escribe 'menu' para regresar al inicio."
+    
     return texto
 
 # -----------------------------
@@ -50,5 +58,44 @@ def materias_por_semestre(carrera, semestre, materias):
     texto = f"Semestre {semestre}:\n"
     for m in materias_carrera:
         texto += f"  - {m['materia']} ({m['clave']}) - {m['horas']} hrs\n"
-    texto += "Escribe 'menu' para regresar al inicio."
+    
     return texto
+
+# -----------------------------
+# Manejo de Aprendizaje (SimSimi)
+# -----------------------------
+RUTA_APRENDIZAJE = "data/aprendido.json"
+
+def cargar_conocimiento_adquirido():
+    """Lee lo que el bot ha aprendido"""
+    if not os.path.exists(RUTA_APRENDIZAJE):
+        return {}
+    try:
+        with open(RUTA_APRENDIZAJE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {}
+
+def guardar_nuevo_conocimiento(pregunta, respuesta):
+    """Guarda una nueva enseñanza"""
+    conocimiento = cargar_conocimiento_adquirido()
+    conocimiento[pregunta] = respuesta
+    
+    # Aseguramos que el directorio data exista
+    os.makedirs(os.path.dirname(RUTA_APRENDIZAJE), exist_ok=True)
+    
+    with open(RUTA_APRENDIZAJE, "w", encoding="utf-8") as f:
+        json.dump(conocimiento, f, ensure_ascii=False, indent=4)
+
+# -----------------------------
+# Registrar preguntas sin respuesta
+# -----------------------------
+def registrar_ignorancia(mensaje_usuario):
+    """Guarda en un archivo de texto lo que el bot no entendió"""
+    archivo = "data/preguntas_sin_respuesta.txt"
+    
+    # Aseguramos que el directorio data exista
+    os.makedirs(os.path.dirname(archivo), exist_ok=True)
+    
+    with open(archivo, "a", encoding="utf-8") as f:
+        f.write(f"{mensaje_usuario}\n")
