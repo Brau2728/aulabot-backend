@@ -202,4 +202,4 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         pass
 
     return "Mmm, esa no me la sé todavía. 😅 Pero ya anoté tu duda para investigarla."
-# Forzando actualizacion en Render
+# Cambio forzado para Render
