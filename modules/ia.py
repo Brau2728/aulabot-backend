@@ -10,7 +10,7 @@ import os
 # =========================================================
 # 🤖 CONFIGURACIÓN DE GEMINI (GOOGLE AI)
 # =========================================================
-# ¡PEGA TU API KEY AQUÍ ABAJO! (Dentro de las comillas)
+# ¡SUSTITUYE ESTO CON TU CLAVE REAL!
 API_KEY = "AIzaSyCq5_N4rebajcW-eTn8FDcITrRnfSOa_Ho" 
 
 try:
@@ -22,7 +22,7 @@ except Exception as e:
     USAR_GEMINI = False
 
 # =========================================================
-# 1. Mapa de Conocimiento (Sinónimos y Errores Comunes)
+# 1. Mapa de Conocimiento
 # =========================================================
 SINONIMOS_CARRERAS = {
     "Ingeniería en Sistemas Computacionales": ["sistemas", "systemas", "programacion", "computacion", "desarrollo", "software", "codigo", "isc"],
@@ -50,9 +50,7 @@ INTENCIONES = {
     "negacion": ["no", "nel", "asi dejalo", "gracias"]
 }
 
-# =========================================================
-# 2. Funciones Auxiliares
-# =========================================================
+# Funciones Auxiliares
 def limpiar_texto(texto):
     texto = texto.lower()
     return ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
@@ -68,138 +66,73 @@ def detectar_mejor_coincidencia(texto_usuario, diccionario):
     return mejor_opcion if mejor_score >= 70 else None
 
 def consultar_gemini(contexto, pregunta_usuario):
-    """
-    Toma datos duros (contexto) y le pide a Gemini que redacte una respuesta bonita.
-    """
-    if not USAR_GEMINI:
-        return contexto # Fallback si no hay internet/key
-
-    prompt = f"""
-    Eres AulaBot, el asistente virtual amigable del Instituto Tecnológico Superior de Ciudad Hidalgo (ITSCH).
-    
-    INFORMACIÓN OFICIAL (Contexto):
-    "{contexto}"
-    
-    USUARIO DICE:
-    "{pregunta_usuario}"
-    
-    TU TAREA:
-    Responde al usuario basándote EXCLUSIVAMENTE en la Información Oficial.
-    - Sé amable, usa emojis 🎓✨.
-    - Si la información es una lista larga, resúmela o dales formato bonito.
-    - NO inventes datos que no estén en la Información Oficial.
-    """
-    
+    if not USAR_GEMINI: return contexto
+    prompt = f"""Eres AulaBot del ITSCH. INFORMACIÓN: "{contexto}". USUARIO: "{pregunta_usuario}". Responde amable, usa emojis, resume si es largo. NO inventes."""
     try:
-        response = model.generate_content(prompt)
-        return response.text
+        return model.generate_content(prompt).text
     except:
-        return contexto 
+        return contexto
 
-# =========================================================
-# 3. Lógica Principal (Híbrida)
-# =========================================================
+# Lógica Principal
 def generar_respuesta(mensaje, user_id, general, carreras, materias):
     mensaje_limpio = limpiar_texto(mensaje)
     memoria = obtener_memoria(user_id)
 
-    # --- Comandos de Reinicio ---
-    if 'reiniciar' in mensaje_limpio or 'salir' in mensaje_limpio:
+    if 'reiniciar' in mensaje_limpio:
         reset_memoria(user_id)
-        return "🔄 Conversación reiniciada. ¿En qué te ayudo ahora?"
+        return "🔄 Conversación reiniciada."
 
-    # --- Detección de Intención ---
     intencion = detectar_mejor_coincidencia(mensaje_limpio, INTENCIONES)
 
-    # --- 1. INTENCIÓN DE AYUDA (MENÚ) ---
+    # 1. Ayuda
     if intencion == "ayuda":
-        return (
-            "🤖 **Menú de Capacidades AulaBot**\n\n"
-            "Puedo informarte sobre todo esto:\n\n"
-            "🎓 **Carreras:** Escribe 'Sistemas', 'Mecatrónica', 'Gestión'...\n"
-            "📘 **Materias:** Dentro de una carrera, pide 'ver materias'.\n"
-            "💵 **Pagos:** Pregunta por 'Costos', 'Inscripción' o 'Ficha'.\n"
-            "🏛 **Directorio:** '¿Quién es el director?', 'Jefe de Industrial'.\n"
-            "⚽ **Vida Estudiantil:** 'Deportes', 'Cafetería', 'Inglés'.\n"
-            "📅 **Trámites:** 'Fechas de admisión', 'Propedéutico', 'Becas'.\n\n"
-            "¡Toca un tema o escribe tu duda!"
-        )
+        return "🤖 **Menú AulaBot**\n🎓 Carreras\n📘 Materias\n💵 Costos\n🏛 Directorio\n⚽ Deportes\n📅 Trámites\n¡Pregúntame!"
 
-    # --- 2. CONTEXTO ACTIVO (Prioridad Alta) ---
+    # 2. Contexto Activo (Carreras)
     if memoria.get('carrera_seleccionada'):
         carrera_sel = memoria['carrera_seleccionada']
-        
-        # Si pide materias explícitamente o afirma
         if intencion == "materias" or intencion == "afirmacion" or "ver" in mensaje_limpio:
             memoria['modo_materias'] = True
             guardar_memoria(user_id, memoria)
-            return f"📂 Entendido. ¿Quieres ver las materias de **{carrera_sel}**? Escribe 'todas' o un semestre (ej. '5')."
+            return f"📂 Viendo materias de **{carrera_sel}**. Escribe 'todas' o el semestre."
 
         if memoria.get('modo_materias'):
-            if 'todas' in mensaje_limpio:
-                return materias_todas(carrera_sel, materias)
-            
+            if 'todas' in mensaje_limpio: return materias_todas(carrera_sel, materias)
             nums = re.findall(r'\d+', mensaje_limpio)
-            if nums:
-                return materias_por_semestre(carrera_sel, int(nums[0]), materias)
+            if nums: return materias_por_semestre(carrera_sel, int(nums[0]), materias)
             
-            # Búsqueda materia específica
             nombres = [m['materia'] for m in materias if m['carrera'] == carrera_sel]
             match, score = process.extractOne(mensaje_limpio, nombres, scorer=fuzz.token_set_ratio) if nombres else (None, 0)
-            
             if score > 75:
                 m = next(x for x in materias if x['materia'] == match and x['carrera'] == carrera_sel)
-                # Usamos Gemini para explicar la materia bonito
-                datos_crudos = f"Materia: {m['materia']}, Clave: {m['clave']}, Semestre: {m['semestre']}, Créditos: {m.get('creditos','N/A')}, Prerrequisito: {m.get('prerrequisito','Ninguno')}."
-                return consultar_gemini(datos_crudos, "¿Qué onda con esta materia?")
+                datos = f"Materia: {m['materia']}, Semestre: {m['semestre']}, Créditos: {m.get('creditos','N/A')}."
+                return consultar_gemini(datos, "¿Qué onda con esta materia?")
 
-    # --- 3. Preguntas Generales (CSV -> Gemini) ---
-    mejor_match_general = None
-    mejor_score_general = 0
-    
+    # 3. General (CSV)
+    mejor_match, mejor_score = None, 0
     for item in general:
         score = fuzz.partial_ratio(limpiar_texto(item['palabra_clave']), mensaje_limpio)
-        if score > mejor_score_general:
-            mejor_score_general = score
-            mejor_match_general = item['respuesta']
-    
-    if mejor_score_general > 85:
-        return consultar_gemini(mejor_match_general, mensaje)
+        if score > mejor_score:
+            mejor_score = score
+            mejor_match = item['respuesta']
+    if mejor_score > 85:
+        return consultar_gemini(mejor_match, mensaje)
 
-    # --- 4. Información de Carreras (CSV -> Gemini) ---
+    # 4. Nueva Carrera
     posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
     if posible_carrera:
         memoria['carrera_seleccionada'] = posible_carrera
         memoria['modo_materias'] = False
         guardar_memoria(user_id, memoria)
-        
         info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
         if info:
-            contexto_carrera = (
-                f"Carrera: {info['nombre']} ({info['clave']}). "
-                f"Descripción: {info['descripcion']}. "
-                f"Jefe de División: {info.get('jefe_division', 'N/A')}. "
-                f"Perfil Ingreso: {info.get('perfil_ingreso', '')}. "
-                f"Campo Laboral: {info.get('perfil_egreso', '')}. "
-                f"Especialidad: {info.get('especialidad', '')}."
-            )
-            return consultar_gemini(contexto_carrera, "Háblame de esta carrera y pregúntame si quiero ver materias.")
+            datos = f"Carrera: {info['nombre']}. Descripción: {info['descripcion']}. Jefe: {info.get('jefe_division','N/A')}."
+            return consultar_gemini(datos, "Háblame de esta carrera.")
 
-    # --- 5. Chat Casual (Gemini Puro - Fallback) ---
-    registrar_ignorancia(mensaje_limpio) 
-    
-    prompt_fallback = f"""
-    Eres AulaBot del ITSCH. El usuario dijo: "{mensaje}".
-    No encontraste información específica en tu base de datos oficial sobre esto.
-    Responde amablemente.
-    Si es un saludo o charla casual, conversa brevemente.
-    Si es una pregunta técnica de la escuela que NO sabes, di: "Ese dato específico no lo tengo a la mano, pero puedo averiguarlo en Servicios Escolares."
-    """
+    # 5. Fallback (Gemini Puro)
+    registrar_ignorancia(mensaje_limpio)
+    prompt_fallback = f"Eres AulaBot. Usuario dice: '{mensaje}'. No hay dato oficial. Responde amable si es saludo. Si es técnico di que no sabes."
     try:
-        if USAR_GEMINI:
-            return model.generate_content(prompt_fallback).text
-    except:
-        pass
-
-    return "Mmm, esa no me la sé todavía. 😅 Pero ya anoté tu duda para investigarla."
-# Cambio forzado para Render
+        if USAR_GEMINI: return model.generate_content(prompt_fallback).text
+    except: pass
+    return "Mmm, no tengo ese dato a la mano. 😅"
