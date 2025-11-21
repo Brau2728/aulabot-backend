@@ -19,15 +19,34 @@ SINONIMOS_CARRERAS = {
     ],
     "Ingeniería Mecatrónica": [
         "mecatronica", "meca", "robotica", "automatizacion", "mecanica", "electronica", "im"
+    ],
+    "Ingeniería Bioquímica": [
+        "bioquimica", "biologia", "laboratorio", "alimentos", "ibq", "quimica"
+    ],
+    "Ingeniería en Nanotecnología": [
+        "nanotecnologia", "nano", "materiales", "particulas", "ina"
+    ],
+    "Ingeniería en Innovación Agrícola Sustentable": [
+        "agricola", "agronomia", "campo", "cultivos", "invernaderos", "iias"
+    ],
+    "Ingeniería en Tecnologías de la Información y Comunicaciones": [
+        "tics", "tic", "redes", "telecomunicaciones", "conectividad", "itic"
+    ],
+    "Ingeniería en Animación Digital y Efectos Visuales": [
+        "animacion", "digital", "videojuegos", "3d", "efectos", "arte", "iadev"
+    ],
+    "Ingeniería en Sistemas Automotrices": [
+        "automotriz", "autos", "coches", "motores", "mecanica automotriz", "isau"
     ]
-    # ¡Agrega más carreras aquí si quieres!
 }
 
 INTENCIONES = {
-    "materias": ["materias", "materia", "clases", "asignaturas", "plan", "reticula", "que llevan"],
-    "costos": ["cuanto cuesta", "precio", "costo", "pagar", "inscripcion", "mensualidad", "dinero"],
-    "ubicacion": ["donde estan", "ubicacion", "mapa", "direccion", "llegar", "localizacion"],
-    "saludo": ["hola", "buenos dias", "buenas", "que tal", "hey", "hi"]
+    "materias": ["materias", "materia", "clases", "asignaturas", "plan", "reticula", "que llevan", "curricula"],
+    "costos": ["cuanto cuesta", "precio", "costo", "pagar", "inscripcion", "mensualidad", "dinero", "ficha", "pago"],
+    "ubicacion": ["donde estan", "ubicacion", "mapa", "direccion", "llegar", "localizacion", "domicilio"],
+    "saludo": ["hola", "buenos dias", "buenas", "que tal", "hey", "hi", "inicio", "comenzar"],
+    "directorio": ["director", "jefe", "coordinador", "quien es", "encargado", "subdirector"],
+    "tramites": ["admision", "propedeutico", "examen", "becas", "servicio social", "residencias", "titulacion"]
 }
 
 # -----------------------------
@@ -41,23 +60,16 @@ def limpiar_texto(texto):
     )
 
 def detectar_mejor_coincidencia(texto_usuario, diccionario_opciones):
-    """
-    Detecta qué quiso decir el usuario incluso si escribe mal.
-    Ej: 'systemaz' -> Detecta 'sistemas' con un score alto.
-    """
     texto_usuario = limpiar_texto(texto_usuario)
     mejor_score = 0
     mejor_opcion = None
 
     for clave, sinonimos in diccionario_opciones.items():
-        # token_set_ratio es muy bueno ignorando palabras extra y detectando typos
         match, score = process.extractOne(texto_usuario, sinonimos, scorer=fuzz.token_set_ratio)
-        
         if score > mejor_score:
             mejor_score = score
             mejor_opcion = clave
     
-    # Umbral de 70: Suficientemente flexible para typos
     return mejor_opcion if mejor_score >= 70 else None
 
 # -----------------------------
@@ -68,15 +80,24 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     memoria = obtener_memoria(user_id)
 
     # --- 1. Comandos Globales ---
-    if 'menu' in mensaje_limpio or 'inicio' in mensaje_limpio:
+    if 'menu' in mensaje_limpio or 'reiniciar' in mensaje_limpio:
         reset_memoria(user_id)
-        return "🔄 Reiniciado. ¿En qué puedo ayudarte?"
+        return "🔄 Reiniciado. ¿En qué puedo ayudarte ahora?"
 
     # --- 2. Detectar Intención General ---
     intencion = detectar_mejor_coincidencia(mensaje_limpio, INTENCIONES)
     
+    # --- AQUÍ ESTÁ EL CAMBIO: SALUDO EXTENSO ---
     if intencion == "saludo":
-        return "¡Hola! 👋 Soy AulaBot. Pregúntame por alguna carrera (ej. 'Sistemas') o ubicación."
+        return (
+            "¡Hola! 👋 Soy **AulaBot**, tu Asistente Estratégico del ITSCH.\n\n"
+            "Estoy capacitado para informarte sobre:\n"
+            "🏛 **Institución:** Historia, Misión, Directores y Jefes de División.\n"
+            "🎓 **Académico:** Detalles de las 10 Ingenierías, Retículas y Especialidades.\n"
+            "💵 **Trámites:** Costos, Proceso de Admisión, Becas y Titulación.\n"
+            "⚽ **Vida Estudiantil:** Deportes, Inglés, Cafetería y Servicios.\n\n"
+            "¿Qué te gustaría consultar hoy?"
+        )
 
     # Buscamos en CSV General (Respuestas fijas)
     for item in general:
@@ -86,7 +107,6 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     # --- 3. Detección Inteligente de Carrera ---
     posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
 
-    # Si encontramos una carrera (incluso mal escrita)
     if posible_carrera:
         memoria['carrera_seleccionada'] = posible_carrera
         memoria['modo_materias'] = False 
@@ -94,40 +114,52 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         
         info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
         if info:
-            # Confirmamos sutilmente lo que entendimos
-            return f"🔍 Entendí que buscas sobre **{info['nombre']}**.\n\n📝 **Descripción:** {info['descripcion']}\n⏱ **Duración:** {info['duracion']}\n\n¿Te gustaría ver las **materias**?"
+            # Respuesta enriquecida con datos del nuevo CSV
+            respuesta = f"🔍 **{info['nombre']}** ({info['clave']})\n\n"
+            respuesta += f"📝 **Descripción:** {info['descripcion']}\n"
+            respuesta += f"🎯 **Perfil de Ingreso:** {info['perfil_ingreso']}\n"
+            respuesta += f"💼 **Campo Laboral:** {info['perfil_egreso']}\n"
+            respuesta += f"⭐ **Especialidad:** {info['especialidad']}\n\n"
+            
+            if info.get('jefe_division') and info['jefe_division'] != "N/A":
+                 respuesta += f"👤 **Jefe de División:** {info['jefe_division']}\n\n"
+
+            respuesta += "¿Te gustaría ver las **materias** de esta carrera?"
+            return respuesta
 
     # --- 4. Contexto Activo (Ya eligió carrera) ---
     if memoria.get('carrera_seleccionada'):
         carrera_sel = memoria['carrera_seleccionada']
 
-        # Detectar si pide materias (ej. "si", "cuales son", "materias")
-        if intencion == "materias" or "si" in mensaje_limpio or "ver" in mensaje_limpio:
+        if intencion == "materias" or "si" in mensaje_limpio or "ver" in mensaje_limpio or "cuales" in mensaje_limpio:
             memoria['modo_materias'] = True
             guardar_memoria(user_id, memoria)
-            return f"📂 Abriendo plan de estudios de **{carrera_sel}**.\nPuedes escribir:\n1️⃣ 'Todas'\n2️⃣ Un semestre (ej. '5')\n3️⃣ Nombre de materia (ej. 'programacion')"
+            return f"📂 **Plan de Estudios: {carrera_sel}**\n\nPuedes pedirme:\n1️⃣ 'Todas las materias'\n2️⃣ Un semestre (ej. '5')\n3️⃣ Una materia específica (ej. 'Cálculo')"
 
         if memoria.get('modo_materias'):
-            # Caso A: Todas
             if 'todas' in mensaje_limpio:
                 return materias_todas(carrera_sel, materias)
 
-            # Caso B: Semestre
             nums = re.findall(r'\d+', mensaje_limpio)
             if nums:
                 return materias_por_semestre(carrera_sel, int(nums[0]), materias)
 
-            # Caso C: Búsqueda Difusa de Materia (Corregir typos en materias)
             nombres_materias = [m['materia'] for m in materias if m['carrera'] == carrera_sel]
             if nombres_materias:
                 match, score = process.extractOne(mensaje_limpio, nombres_materias, scorer=fuzz.token_set_ratio)
                 
                 if score > 75:
                     m = next((x for x in materias if x['materia'] == match and x['carrera'] == carrera_sel), None)
-                    return f"📘 **{m['materia']}**\nClave: {m['clave']} | Semestre: {m['semestre']} | Horas: {m['horas']}"
+                    return f"📘 **{m['materia']}**\nClave: {m['clave']}\nSemestre: {m['semestre']}\nCréditos: {m.get('creditos', 'N/A')}\nPrerrequisito: {m.get('prerrequisito', 'Ninguno')}"
             
-            return f"🤔 No encontré una materia que suene a '{mensaje}'. Intenta escribir solo el número de semestre."
+            return f"🤔 No encontré esa materia en {carrera_sel}. Intenta escribir solo el número de semestre."
 
-    # --- 5. Fallback (No entendió nada) ---
+    # --- 5. Fallback ---
     registrar_ignorancia(mensaje_limpio)
-    return "No estoy seguro de qué carrera o tema hablas. 😅\nPrueba escribiendo palabras clave como 'Sistemas', 'Industrial' o 'Ubicación'."
+    return (
+        "No estoy seguro de qué tema hablas. 😅\n\n"
+        "Prueba preguntando por:\n"
+        "🔹 Una carrera (ej. 'Sistemas', 'Industrial')\n"
+        "🔹 Un trámite (ej. 'Costos', 'Admisión')\n"
+        "🔹 Un directivo (ej. 'Director', 'Jefe de Sistemas')"
+    )
