@@ -11,7 +11,7 @@ import os
 # 🤖 CONFIGURACIÓN DE GEMINI (GOOGLE AI)
 # =========================================================
 # ¡PEGA TU API KEY AQUÍ ABAJO! (Dentro de las comillas)
-API_KEY = "AIzaSyAjK0rguQ58JR08Sj_ASVpOSVT3kAJZSkA" 
+API_KEY = "AIzaSyCq5_N4rebajcW-eTn8FDcITrRnfSOa_Ho" 
 
 try:
     genai.configure(api_key=API_KEY)
@@ -202,3 +202,4 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         pass
 
     return "Mmm, esa no me la sé todavía. 😅 Pero ya anoté tu duda para investigarla."
+# Forzando actualizacion en Render
