@@ -1,9 +1,31 @@
-carrera,semestre,materia,clave,horas
-Ingeniería en Sistemas Computacionales,5,Programación Orientada a Objetos,SIS501,5
-Ingeniería en Sistemas Computacionales,5,Estructuras de Datos,SIS502,4
-Ingeniería en Sistemas Computacionales,5,Bases de Datos,SIS503,4
-Ingeniería en Sistemas Computacionales,5,Inteligencia Artificial,SIS504,4
-Ingeniería en Sistemas Computacionales,5,Redes de Computadoras,SIS505,5
-Ingeniería en Sistemas Computacionales,5,Arquitectura de Computadoras,SIS506,4
-Ingeniería en Sistemas Computacionales,5,Desarrollo Web,SIS507,4
-Ingeniería en Sistemas Computacionales,5,Sistemas Operativos,SIS508,5
+carrera,semestre,materia,clave,horas,creditos,prerrequisito
+Ingeniería en Sistemas Computacionales,1,Cálculo Diferencial,ACF-0901,5,5,Ninguno
+Ingeniería en Sistemas Computacionales,1,Taller de Ética,ACA-0907,4,4,Ninguno
+Ingeniería en Sistemas Computacionales,2,Cálculo Integral,ACF-0902,5,5,Cálculo Diferencial
+Ingeniería en Sistemas Computacionales,2,Programación Orientada a Objetos,AED-1286,5,5,Fundamentos de Programación
+Ingeniería en Sistemas Computacionales,3,Estructura de Datos,AED-1287,5,5,Programación Orientada a Objetos
+Ingeniería en Sistemas Computacionales,4,Taller de Sistemas Operativos,SCA-1026,4,4,Sistemas Operativos
+Ingeniería en Sistemas Computacionales,6,Ingeniería de Software,SCD-1011,5,5,Análisis y Modelado
+Ingeniería en Sistemas Computacionales,7,Inteligencia Artificial,SCC-1012,5,5,Matemáticas Discretas
+Ingeniería en Sistemas Computacionales,8,Programación de Móviles,ESP-movil,5,5,Programación Web
+Ingeniería en Sistemas Computacionales,8,Diseño de UI/UX,ESP-ux,4,4,Ingeniería de Software
+Ingeniería Mecatrónica,1,Química,AEC-1058,4,4,Ninguno
+Ingeniería Mecatrónica,3,Estática,MEF-1010,5,5,Física General
+Ingeniería Mecatrónica,4,Dinámica,MEF-1007,5,5,Estática
+Ingeniería Mecatrónica,6,Microcontroladores,MTF-1019,5,5,Electrónica Digital
+Ingeniería Mecatrónica,7,Robótica,MTD-1026,5,5,Mecanismos
+Ingeniería Mecatrónica,8,Introducción a la Industria 4.0,ESP-ind4,5,5,Automatización
+Ingeniería Industrial,1,Taller de Ética,ACA-0907,4,4,Ninguno
+Ingeniería Industrial,3,Estadística Inferencial I,GEF-0907,5,5,Probabilidad
+Ingeniería Industrial,4,Estudio del Trabajo I,INJ-1011,6,6,Ninguno
+Ingeniería Industrial,5,Control Estadístico de la Calidad,INF-1007,5,5,Estadística Inferencial
+Ingeniería Industrial,7,Logística y Cadenas de Suministro,INC-1019,4,4,Investigación de Operaciones
+Ingeniería Industrial,8,Sistemas de Manufactura,INF-1028,5,5,Gestión de Producción
+Ingeniería Bioquímica,3,Fenómenos de Transporte I,IBQ-1005,5,5,Cálculo Vectorial
+Ingeniería Bioquímica,5,Microbiología,IBF-1015,5,5,Biología
+Ingeniería Bioquímica,7,Ingeniería de Biorreactores,IBQ-1008,5,5,Cinética Química
+Ingeniería en Nanotecnología,4,Física del Estado Sólido,NAF-1010,5,5,Física Moderna
+Ingeniería en Nanotecnología,6,Síntesis de Nanomateriales,NAF-1025,5,5,Química Orgánica
+Ingeniería en Innovación Agrícola Sustentable,2,Botánica Aplicada,ASF-1005,5,5,Biología Celular
+Ingeniería en Innovación Agrícola Sustentable,4,Edafología,ASF-1009,5,5,Química Agrícola
+Ingeniería en Innovación Agrícola Sustentable,7,Agroecología,ASC-1001,4,4,Desarrollo Sustentable

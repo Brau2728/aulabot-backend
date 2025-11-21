@@ -1,14 +1,27 @@
 palabra_clave,categoria,respuesta
-hola,saludo,¡Hola! Bienvenido al Instituto Tecnológico. ¿Qué te gustaría saber? Puedes preguntar por carreras, ubicación, contacto o horarios.
-buenas,saludo,¡Buenas! ¿Qué información necesitas del Instituto Tecnológico?
-horarios,info,Los horarios pueden variar por carrera y semestre. ¿Sobre qué carrera te gustaría saber?
-ubicacion,info,Nos ubicamos en Av. Principal 123, Ciudad Universitaria. ¿Quieres indicaciones o mapa?
-donde estan,info,Estamos ubicados en Av. Principal 123, Ciudad Universitaria.
-telefono,info,Nuestro teléfono de contacto es (000) 123 4567.
-contacto,info,Puedes comunicarte al (000) 123 4567 o enviar un correo a contacto@tecnologico.edu.mx.
-nombre,info,Somos el Instituto Tecnológico Superior de Ejemplo.
-que carreras tienen,consulta_carreras,Ofrecemos distintas ingenierías. ¿Te interesa alguna en particular? (Puedes decir: Ingeniería en Sistemas, Ingeniería Industrial, etc.)
-carreras,consulta_carreras,Contamos con diversas carreras. ¿Cuál te interesa?
-cuando inician clases,info,Las clases inician al inicio del próximo ciclo escolar. ¿Quieres saber fechas específicas de una carrera?
-inscripciones,info,Las inscripciones abren cada semestre. ¿Quieres requisitos de ingreso?
-requisitos,info,Los requisitos dependen de la carrera. ¿Qué área te interesa?
+historia,identidad,"El ITSCH se fundó aprox. en el año 2000. Celebramos nuestro 24º aniversario y somos reconocidos por ANFEI como una de las mejores escuelas de ingeniería en desarrollo."
+mision,filosofia,"Misión: Formar profesionales con valores emprendedores y creativos, capaces de transformar su entorno aplicando ciencia y tecnología (Ser, Saber, Hacer)."
+vision,filosofia,"Visión: Ser institución de vanguardia y pilar fundamental del desarrollo sustentable en la región oriente de Michoacán."
+valores,filosofia,"Nuestra filosofía se basa en el trinomio: Ser (ética/humanismo), Saber (ciencias) y Hacer (tecnología aplicada)."
+director,directorio,"El Director General es José Trinidad Lara López. El Director Académico es Juan José Maldonado García."
+subdirector,directorio,"El Subdirector Académico es el Ing. Oscar Delgado Camacho, encargado de la operatividad docente."
+jefe sistemas,directorio,"El Jefe de División de Sistemas (ISC) es el Ing. José Iraic Alcantar Alcantar."
+jefe industrial,directorio,"El Jefe de División de Industrial es Natanael Vargas Pimentel."
+coordinador ingles,directorio,"El Coordinador del Centro de Lenguas Extranjeras es Albino Herrera García."
+investigadores,academico,"Nuestros investigadores SNI Nivel I son: Dr. Luis Alberto Madrigal Pérez, Dr. Manuel Alejandro Valdés Madrigal y Dr. Ernesto Rodríguez Andrade."
+docentes destacados,academico,"Profesores con Perfil PRODEP: Mauricio Nahuam Chávez Avilés, Susana Reyes Vázquez, Gabriel Casarrubias Guerrero y Saúl Tapia Reynoso."
+cuerpos academicos,academico,"Contamos con 8 Cuerpos Académicos y participamos en la red 'Optimización de procesos con la industria 4.0'."
+logros,orgullo,"¡Orgullo Mapache! 1er lugar nacional en INNOVATECNM 2023. Organizamos el congreso internacional INGECO."
+patentes,innovacion,"Hemos registrado 12 obras de software y multimedia ante el INDAUTOR, demostrando nuestra capacidad de desarrollo tecnológico."
+admision,tramites,"Convocatoria: Feb-Abril. Examen diagnóstico (matemáticas/lógica). Curso propedéutico obligatorio (Julio-Agosto)."
+propedeutico,tramites,"Curso de 2-3 semanas. Temas clave: Lógica Formal, Técnicas de Argumentación e Identificación de Falacias. Costo aprox: $520."
+costos,pagos,"Ficha: ~$950. Inscripción 1er sem: ~$1,860. Reinscripción: ~$1,250. Inglés: $880/módulo. Titulación: ~$2,100. Costo anual promedio: $3,000."
+becas,apoyo,"Gestionamos Beca Benito Juárez y Beca Alimenticia. Las convocatorias suelen abrir en Febrero y Agosto."
+residencias,tramites,"Se realizan en 9no semestre. Requisitos: 80% de créditos aprobados y Servicio Social liberado."
+servicio social,tramites,"Puedes iniciarlo con el 70% de créditos. Acude al departamento de Gestión Tecnológica."
+ingles,servicios,"Centro de Lenguas Extranjeras: Ofrece inglés modular y preparación TOEFL. Es requisito obligatorio para titulación."
+deportes,vida_estudiantil,"Instalaciones: Canchas de fútbol soccer, fútbol rápido y voleibol de playa. Fomentamos la formación integral."
+cafeteria,servicios,"La cafetería opera de 7:00 AM a 5:00 PM. Espacio ideal para la convivencia estudiantil."
+psicologia,apoyo,"Ofrecemos atención psicopedagógica para diagnóstico y apoyo en problemas de aprendizaje o riesgo de deserción."
+ubicacion,contacto,"Estamos en Ciudad Hidalgo, Michoacán. Somos la principal opción tecnológica del oriente del estado."
+horarios,contacto,"Atención administrativa: Lunes a Viernes de 9:00 AM a 5:00 PM."
