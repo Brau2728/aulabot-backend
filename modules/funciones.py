@@ -1,84 +1,120 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from pydantic import BaseModel
+import csv
+import json
 import os
-import sys
-
-# Importar tus módulos locales
-from modules.ia import generar_respuesta
-from modules.funciones import leer_csv
 
 # -----------------------------
-# 1. Configuración Inicial
+# Funciones de Soporte
 # -----------------------------
-app = FastAPI(title="AulaBot API", version="2.0")
+RUTA_APRENDIZAJE = "data/aprendido.json"
 
-# Configuración CORS (Permite que tu App Flutter y Web se conecten)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def _parse_horas(horas_str):
+    """Convierte '3-2-5' a '3T / 2P (5 Créditos)'"""
+    if not horas_str or '-' not in horas_str:
+        return f"{horas_str} hrs"
+    
+    parts = horas_str.split('-')
+    if len(parts) == 3:
+        teoricas = parts[0]
+        practicas = parts[1]
+        creditos = parts[2]
+        return f"{teoricas}T / {practicas}P ({creditos} Créditos)"
+    return f"{horas_str} hrs"
+
+def cargar_conocimiento_adquirido():
+    """Lee lo que el bot ha aprendido"""
+    if not os.path.exists(RUTA_APRENDIZAJE):
+        return {}
+    try:
+        with open(RUTA_APRENDIZAJE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {}
+
+def guardar_nuevo_conocimiento(pregunta, respuesta):
+    """Guarda una nueva enseñanza"""
+    conocimiento = cargar_conocimiento_adquirido()
+    conocimiento[pregunta] = respuesta
+    os.makedirs(os.path.dirname(RUTA_APRENDIZAJE), exist_ok=True)
+    with open(RUTA_APRENDIZAJE, "w", encoding="utf-8") as f:
+        json.dump(conocimiento, f, ensure_ascii=False, indent=4)
+
+def registrar_ignorancia(mensaje_usuario):
+    """Guarda en un archivo de texto lo que el bot no entendió"""
+    archivo = "data/preguntas_sin_respuesta.txt"
+    os.makedirs(os.path.dirname(archivo), exist_ok=True)
+    with open(archivo, "a", encoding="utf-8") as f:
+        f.write(f"{mensaje_usuario}\n")
 
 # -----------------------------
-# 2. Modelos de Datos (Pydantic)
+# Leer CSV
 # -----------------------------
-class MensajeUsuario(BaseModel):
-    usuario_id: str
-    mensaje: str
-
-class RespuestaBot(BaseModel):
-    respuesta: str
-    estado: str = "ok"
-
-# -----------------------------
-# 3. Carga de Datos Robusta
-# -----------------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-try:
-    path_general = os.path.join(BASE_DIR, "data", "general.csv")
-    path_carreras = os.path.join(BASE_DIR, "data", "carreras.csv")
-    path_materias = os.path.join(BASE_DIR, "data", "materias.csv")
-
-    general = leer_csv(path_general)
-    carreras = leer_csv(path_carreras)
-    materias = leer_csv(path_materias)
-    print("✅ Base de datos cargada correctamente.")
-
-except Exception as e:
-    print(f"❌ Error crítico al cargar datos: {e}")
-    sys.exit(1)
+def leer_csv(nombre_archivo):
+    datos = []
+    try:
+        with open(nombre_archivo, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for fila in reader:
+                datos.append(fila)
+    except FileNotFoundError:
+        print(f"⚠️ Advertencia: No se encontró {nombre_archivo}")
+    return datos
 
 # -----------------------------
-# 4. Endpoints (Rutas)
+# Listar carreras (Para el menú de "carreras")
 # -----------------------------
-@app.get("/")
-async def read_index():
-    file_path = os.path.join(BASE_DIR, "index.html")
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-    return {"mensaje": "AulaBot API activa. Usa /docs para ver la documentación."}
+def listar_carreras(carreras_data):
+    """Genera una lista formateada de todas las carreras."""
+    lista = []
+    
+    nombres_carrera = [
+        carrera['nombre'].replace("Ingeniería en ", "").replace("Ingeniería ", "")
+        for carrera in carreras_data
+    ]
+    
+    # Formatear la lista con emojis
+    for i, nombre in enumerate(nombres_carrera):
+        lista.append(f"🎓 {i+1}. {nombre}")
+    
+    return "\n".join(lista)
 
-@app.post("/chat", response_model=RespuestaBot)
-def chat_endpoint(datos: MensajeUsuario):
-    if not datos.mensaje.strip():
-        raise HTTPException(status_code=400, detail="El mensaje no puede estar vacío")
+# -----------------------------
+# Materias de toda la carrera
+# -----------------------------
+def materias_todas(carrera, materias):
+    materias_carrera = [m for m in materias if m['carrera'].lower() == carrera.lower()]
+    if not materias_carrera:
+        return "No se encontraron materias para esta carrera."
 
     try:
-        respuesta_texto = generar_respuesta(
-            datos.mensaje, 
-            datos.usuario_id, 
-            general, 
-            carreras, 
-            materias
-        )
+        materias_carrera.sort(key=lambda x: int(x['semestre']))
+    except ValueError:
+        pass
         
-        return RespuestaBot(respuesta=respuesta_texto)
+    texto = ""
+    semestres = sorted(set(m['semestre'] for m in materias_carrera), key=lambda x: int(x) if x.isdigit() else x)
+    
+    for sem in semestres:
+        texto += f"**Semestre {sem}:**\n"
+        for m in materias_carrera:
+            if m['semestre'] == sem:
+                parsed_horas = _parse_horas(m.get('horas', 'N/A'))
+                texto += f"  - {m['materia']} ({m['clave']}) - {parsed_horas}\n"
+        texto += "\n"
+    
+    return texto
 
-    except Exception as e:
-        print(f"Error interno en chat: {e}")
-        raise HTTPException(status_code=500, detail="Error interno del servidor")
+# -----------------------------
+# Materias por semestre
+# -----------------------------
+def materias_por_semestre(carrera, semestre, materias):
+    semestre_str = str(semestre)
+    materias_carrera = [m for m in materias if m['carrera'].lower() == carrera.lower() and m['semestre'] == semestre_str]
+    if not materias_carrera:
+        return f"No se encontraron materias para el semestre {semestre}."
+
+    texto = f"**Semestre {semestre} de {carrera}:**\n"
+    for m in materias_carrera:
+        parsed_horas = _parse_horas(m.get('horas', 'N/A'))
+        texto += f"  - {m['materia']} ({m['clave']}) - {parsed_horas}\n"
+    
+    return texto
