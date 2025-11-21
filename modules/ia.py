@@ -1,26 +1,10 @@
-import google.generativeai as genai
-from modules.funciones import listar_carreras, materias_por_semestre, materias_todas, registrar_ignorancia, cargar_conocimiento_adquirido, guardar_nuevo_conocimiento
+from modules.funciones import listar_carreras, materias_por_semestre, materias_todas, registrar_ignorancia
 from modules.memoria import obtener_memoria, guardar_memoria, reset_memoria, actualizar_conversacion
 from thefuzz import process, fuzz 
 import unicodedata
 import re
 import random
 import os
-
-# =========================================================
-# 🤖 CONFIGURACIÓN DE GEMINI (GOOGLE AI)
-# =========================================================
-API_KEY = os.getenv("GEMINI_API_KEY") 
-
-try:
-    if API_KEY:
-        genai.configure(api_key=API_KEY)
-        model = genai.GenerativeModel('gemini-pro')
-        USAR_GEMINI = True
-    else:
-        USAR_GEMINI = False
-except Exception as e:
-    USAR_GEMINI = False
 
 # =========================================================
 # 1. Mapa de Conocimiento
@@ -84,6 +68,13 @@ TRANSICIONES_TEMA = [
     "\n\n¿Te ayudo con algo más relacionado?"
 ]
 
+RESPUESTAS_SALUDO = [
+    "¡Hola! 👋 Soy AulaBot, tu asistente del ITSCH. ¿En qué puedo ayudarte hoy?",
+    "¡Buenas! 🤖 ¿Qué te gustaría saber sobre el ITSCH?",
+    "¡Hola! 🎓 Estoy aquí para resolver tus dudas sobre el instituto. ¿Por dónde empezamos?",
+    "¡Hey! 👋 ¿En qué puedo orientarte hoy?"
+]
+
 def obtener_respuesta_afirmativa():
     return random.choice(RESPUESTAS_AFIRMATIVAS)
 
@@ -92,6 +83,9 @@ def obtener_respuesta_negativa():
 
 def obtener_transicion():
     return random.choice(TRANSICIONES_TEMA)
+
+def obtener_saludo():
+    return random.choice(RESPUESTAS_SALUDO)
 
 # =========================================================
 # 3. Funciones Auxiliares Mejoradas
@@ -108,31 +102,7 @@ def detectar_mejor_coincidencia(texto_usuario, diccionario):
         if score > mejor_score:
             mejor_score = score
             mejor_opcion = clave
-    return mejor_opcion if mejor_score >= 65 else None  # Bajamos el threshold para mayor flexibilidad
-
-def consultar_gemini(contexto, pregunta_usuario):
-    if not USAR_GEMINI:
-        return contexto 
-
-    prompt = f"""
-    Eres AulaBot, el asistente virtual amigable del ITSCH.
-    INFORMACIÓN OFICIAL (Contexto):
-    "{contexto}"
-    USUARIO DICE:
-    "{pregunta_usuario}"
-    
-    TU TAREA:
-    Responde al usuario basándote EXCLUSIVAMENTE en la Información Oficial. 
-    - Sé amable, natural y conversacional
-    - Usa emojis apropiados 🎓✨🤔
-    - Si es una lista o info crítica (costos, trámites), mantenla clara y legible
-    - Responde como si estuvieras teniendo una conversación normal
-    """
-    try:
-        response = genai.GenerativeModel('gemini-pro').generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return contexto
+    return mejor_opcion if mejor_score >= 65 else None
 
 def detectar_intenciones_multiples(mensaje_limpio):
     """Detecta múltiples intenciones en un mensaje"""
@@ -162,8 +132,24 @@ def detectar_semestre_natural(mensaje_limpio):
     
     return None
 
+def formatear_respuesta_amigable(texto):
+    """Formatea respuestas para hacerlas más amigables sin Gemini"""
+    # Agregar emojis según el contexto
+    if any(palabra in texto.lower() for palabra in ['carrera', 'ingeniería', 'estudiar']):
+        return f"🎓 {texto}"
+    elif any(palabra in texto.lower() for palabra in ['materia', 'clase', 'estudio']):
+        return f"📚 {texto}"
+    elif any(palabra in texto.lower() for palabra in ['costo', 'precio', 'pago']):
+        return f"💵 {texto}"
+    elif any(palabra in texto.lower() for palabra in ['jefe', 'director', 'coordinador']):
+        return f"👨‍🏫 {texto}"
+    elif any(palabra in texto.lower() for palabra in ['hola', 'buenos', 'buenas']):
+        return f"👋 {texto}"
+    else:
+        return f"🤖 {texto}"
+
 # =========================================================
-# 4. Lógica Principal Mejorada
+# 4. Lógica Principal Mejorada (SIN GEMINI)
 # =========================================================
 def generar_respuesta(mensaje, user_id, general, carreras, materias):
     mensaje_limpio = limpiar_texto(mensaje)
@@ -174,19 +160,17 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     # --- Comandos de Reinicio ---
     if any(palabra in mensaje_limpio for palabra in ['reiniciar', 'salir', 'empezar de nuevo', 'otra vez']):
         reset_memoria(user_id)
-        return "🔄 Conversación reiniciada. ¿En qué te ayudo ahora?"
+        return formatear_respuesta_amigable("Conversación reiniciada. ¿En qué te ayudo ahora?")
 
     # --- Manejo de Múltiples Intenciones ---
     if len(intenciones_multiples) > 1:
         if "saludo" in intenciones_multiples:
-            # Quitar saludo para manejar la otra intención
             intenciones_multiples.remove("saludo")
             if intenciones_multiples:
-                respuesta = "¡Hola! 👋 Veo que tienes varias preguntas. "
-                respuesta += "Para darte la mejor respuesta, vamos de una a la vez. "
+                respuesta = "¡Hola! 👋 Veo que tienes varias preguntas. Vamos de una a la vez. "
                 respuesta += f"¿Podrías contarme más sobre lo que necesitas saber de {' o '.join(intenciones_multiples)}?"
                 actualizar_conversacion(user_id, mensaje, respuesta)
-                return respuesta
+                return formatear_respuesta_amigable(respuesta)
 
     # --- 1. INTENCIÓN DE AYUDA (MENÚ MEJORADO) ---
     if intencion == "ayuda":
@@ -212,23 +196,16 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     
     # --- 2. SALUDO NATURAL ---
     if intencion == "saludo":
-        saludos = [
-            "¡Hola! 👋 Soy AulaBot, tu asistente del ITSCH. ¿En qué puedo ayudarte hoy?",
-            "¡Buenas! 🤖 ¿Qué te gustaría saber sobre el ITSCH?",
-            "¡Hola! 🎓 Estoy aquí para resolver tus dudas sobre el instituto. ¿Por dónde empezamos?",
-            "¡Hey! 👋 ¿En qué puedo orientarte hoy?"
-        ]
-        respuesta = random.choice(saludos)
+        respuesta = obtener_saludo()
         actualizar_conversacion(user_id, mensaje, respuesta)
         return respuesta
     
     # --- 3. LISTADO DE CARRERAS MEJORADO ---
     if intencion == "carreras_lista":
         lista = listar_carreras(carreras)
-        respuesta_base = f"¡Claro! El ITSCH ofrece estas ingenierías:\n\n{lista}\n\n¿Te interesa conocer más sobre alguna en particular? Solo dime su nombre (ej: 'Sistemas', 'Mecatrónica')."
-        respuesta_final = consultar_gemini(respuesta_base, "Responde de forma amable y entusiasta sobre las carreras disponibles.")
-        actualizar_conversacion(user_id, mensaje, respuesta_final)
-        return respuesta_final
+        respuesta = f"¡Claro! El ITSCH ofrece estas ingenierías:\n\n{lista}\n\n¿Te interesa conocer más sobre alguna en particular? Solo dime su nombre (ej: 'Sistemas', 'Mecatrónica')."
+        actualizar_conversacion(user_id, mensaje, respuesta)
+        return formatear_respuesta_amigable(respuesta)
 
     # --- 4. BÚSQUEDA DE JEFE DE CARRERA ESPECÍFICO ---
     if intencion == "jefes":
@@ -237,14 +214,13 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         if posible_carrera:
             info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
             if info and info.get('jefe_division'):
-                respuesta_jefe = f"El Jefe de División de {info['nombre']} es: {info['jefe_division']}."
-                respuesta_final = consultar_gemini(respuesta_jefe, "Responde este dato de Directorio de forma amable y directa.")
-                actualizar_conversacion(user_id, mensaje, respuesta_final)
-                return respuesta_final
+                respuesta = f"👨‍🏫 El Jefe de División de **{info['nombre']}** es: **{info['jefe_division']}**."
+                actualizar_conversacion(user_id, mensaje, respuesta)
+                return respuesta
         
         respuesta = "Para decirte quién es el Jefe, necesito saber de qué carrera me hablas. Por ejemplo: 'Jefe de Sistemas' o 'Quién es el jefe de Industrial' 🏛️"
         actualizar_conversacion(user_id, mensaje, respuesta)
-        return respuesta
+        return formatear_respuesta_amigable(respuesta)
 
     # --- 5. INFORMACIÓN DE CARRERAS (CONVERSACIONAL) ---
     posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
@@ -256,15 +232,15 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
         if info:
             # Respuesta más conversacional y natural
-            contexto_carrera = (
+            respuesta = (
                 f"¡Excelente elección! 🎓 **{info['nombre']}** ({info['clave']})\n\n"
                 f"📖 **Qué aprenderás:** {info['descripcion']}\n\n"
                 f"👨‍🏫 **Jefe de división:** {info.get('jefe_division', 'Por asignar')}\n"
                 f"⏱️ **Duración:** {info['duracion']}\n\n"
                 f"¿Te gustaría conocer las materias que llevarás durante la carrera?"
             )
-            actualizar_conversacion(user_id, mensaje, contexto_carrera)
-            return contexto_carrera
+            actualizar_conversacion(user_id, mensaje, respuesta)
+            return respuesta
 
     # --- 6. MANEJO DE MATERIAS MEJORADO ---
     if memoria.get('carrera_seleccionada'):
@@ -279,7 +255,7 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             respuesta_materias = materias_todas(carrera_sel, materias)
             respuesta = f"{obtener_respuesta_afirmativa()} el plan completo de **{carrera_sel}**:\n\n{respuesta_materias}\n\n¿Te interesa ver las materias de algún semestre en particular? Solo dime el número (ej: '3' o 'quinto semestre')."
             actualizar_conversacion(user_id, mensaje, respuesta)
-            return respuesta
+            return formatear_respuesta_amigable(respuesta)
         
         # Si está en modo materias, busca por semestre
         if memoria.get('modo_materias'):
@@ -289,7 +265,7 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
                 respuesta = materias_por_semestre(carrera_sel, semestre, materias)
                 respuesta += obtener_transicion()
                 actualizar_conversacion(user_id, mensaje, respuesta)
-                return respuesta
+                return formatear_respuesta_amigable(respuesta)
             
             # Búsqueda de materia específica
             nombres = [m['materia'] for m in materias if m['carrera'] == carrera_sel]
@@ -297,8 +273,10 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             
             if score > 75:
                 m = next(x for x in materias if x['materia'] == match and x['carrera'] == carrera_sel)
-                datos_crudos = f"Materia: {m['materia']}, Clave: {m['clave']}, Semestre: {m['semestre']}, Horas: {m.get('horas','N/A')}, Prerrequisito: {m.get('prerrequisito','Ninguno')}."
-                respuesta = consultar_gemini(datos_crudos, f"Explica esta materia de forma amigable y útil para el estudiante.")
+                respuesta = f"📚 **{m['materia']}** ({m['clave']})\n"
+                respuesta += f"📅 **Semestre:** {m['semestre']}\n"
+                respuesta += f"⏱️ **Horas:** {m.get('horas','N/A')}\n"
+                respuesta += f"📝 **Prerrequisito:** {m.get('prerrequisito','Ninguno')}"
                 actualizar_conversacion(user_id, mensaje, respuesta)
                 return respuesta
 
@@ -312,8 +290,8 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             mejor_score_general = score
             mejor_match_general = item['respuesta']
     
-    if mejor_score_general > 80:  # Bajamos el threshold para mayor flexibilidad
-        respuesta = consultar_gemini(mejor_match_general, mensaje)
+    if mejor_score_general > 80:
+        respuesta = formatear_respuesta_amigable(mejor_match_general)
         # Agregar transición si cambió de tema
         if memoria.get('ultimo_tema') != 'general':
             respuesta += obtener_transicion()
@@ -326,30 +304,13 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     # --- 8. FALLBACK MEJORADO ---
     registrar_ignorancia(mensaje_limpio)
     
-    # Intentar con Gemini si está disponible
-    if USAR_GEMINI:
-        try:
-            prompt_fallback = f"""
-            Eres AulaBot, asistente virtual del ITSCH. El usuario preguntó: '{mensaje}'.
-            
-            Si es una pregunta sobre educación superior, ingenierías, trámites escolares, vida estudiantil o temas relacionados con educación técnica:
-            - Responde de manera amable y útil
-            - Si no tienes información específica, sugiere consultar en servicios escolares
-            - Mantén un tono conversacional y usa emojis apropiados
-            
-            Si es completamente fuera de contexto, responde amablemente redirigiendo al tema académico.
-            """
-            respuesta = consultar_gemini(prompt_fallback, mensaje)
-            actualizar_conversacion(user_id, mensaje, respuesta)
-            return respuesta
-        except:
-            pass
-
     # Respuesta por defecto más amigable
     respuestas_fallback = [
         "Mmm, esa pregunta es interesante. 😅 Aún no tengo esa información específica, pero la anotaré para investigarla. ¿Puedo ayudarte con algo más del ITSCH?",
         "¡Vaya! Esa no me la sé todavía. 🤔 Pero puedo ayudarte con información sobre carreras, materias, costos y trámites del instituto.",
-        "Ese dato específico no lo tengo a la mano. 😊 ¿Te puedo ayudar con información académica o sobre los servicios del ITSCH?"
+        "Ese dato específico no lo tengo a la mano. 😊 ¿Te puedo ayudar con información académica o sobre los servicios del ITSCH?",
+        "Por ahora no tengo información sobre eso en mi base de datos. 📝 Pero puedo ayudarte con carreras, materias, costos y trámites del ITSCH.",
+        "Esa consulta está fuera de mi conocimiento actual. 🧠 ¿Te interesa saber sobre las carreras, materias u otros servicios del instituto?"
     ]
     
     respuesta = random.choice(respuestas_fallback)
