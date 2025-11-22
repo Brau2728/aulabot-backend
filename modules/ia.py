@@ -87,7 +87,7 @@ INTENCIONES = {
 }
 
 # =========================================================
-# 2. FUNCIONES DE INTELIGENCIA
+# 2. FUNCIONES DE INTELIGENCIA..
 # =========================================================
 def limpiar_texto(texto):
     texto = texto.lower()
