@@ -8,7 +8,7 @@ import random
 import os
 
 # =========================================================
-# 1. CONFIGURACIÓN DE GEMINI
+# 🤖 CONFIGURACIÓN DE GEMINI
 # =========================================================
 API_KEY = os.getenv("GEMINI_API_KEY") 
 
@@ -23,39 +23,37 @@ except Exception as e:
     USAR_GEMINI = False
 
 # =========================================================
-# 2. BANCO DE FRASES (PERSONALIDAD)
+# 🧱 BANCO DE FRASES
 # =========================================================
-FRASES_SALUDO = [
-    "¡Hola! 👋 Soy AulaBot. ¿En qué te puedo echar la mano hoy?",
-    "¡Qué tal! 🤖 Tu asistente del ITSCH listo. ¿Qué necesitas saber?",
-    "¡Hola, hola! 😊 Aquí estoy para resolver tus dudas sobre el Tec.",
-    "¡Buenas! 🎓 ¿Buscas información de alguna carrera o trámite?",
-    "¡Hey! 👋 Soy AulaBot. Cuéntame, ¿qué te interesa consultar?"
+FRASES_SALUDO_CON_NOMBRE = [
+    "¡Hola, {nombre}! 👋 Soy AulaBot. ¿En qué te puedo ayudar?",
+    "¡Qué tal, {nombre}! 🤖 Aquí tu asistente listo. ¿Qué necesitas?",
+    "¡Hola, {nombre}! 😊 Un gusto saludarte de nuevo.",
+    "¡Buenas, {nombre}! 🎓 ¿Buscas información de alguna carrera?",
 ]
 
 FRASES_MATERIAS = [
-    "📂 ¡Listo! Aquí tienes el plan de estudios de **{carrera}**:",
-    "📘 Checa las materias que se llevan en **{carrera}**:",
-    "🎓 Estas son las asignaturas para **{carrera}**:",
-    "📚 Desplegando la retícula de **{carrera}**. ¡Mira esto!:"
+    "📂 ¡Listo, {nombre}! Aquí tienes el plan de estudios de **{carrera}**:",
+    "📘 {nombre}, checa las materias que se llevan en **{carrera}**:",
+    "🎓 Estas son las asignaturas para **{carrera}**, {nombre}:",
+    "📚 Desplegando la retícula de **{carrera}**. ¡Mira esto, {nombre}!:"
 ]
 
 FRASES_NO_ENTENDI = [
-    "Mmm, esa no me la sé todavía. 😅 Pero ya anoté tu duda para investigarla.",
-    "¡Órale! Me corchaste con esa pregunta. 🤔 Intenta decirme el nombre de una carrera.",
-    "No estoy seguro de qué hablas. 🤷‍♂️ Prueba preguntando por 'Costos' o 'Sistemas'.",
-    "Ese dato se me escapa. 🧐 ¿Podrías ser más específico? Quizás buscas 'Ubicación' o 'Becas'."
+    "Mmm, esa no me la sé, {nombre}. 😅 Pero ya anoté tu duda.",
+    "¡Órale, {nombre}! Me corchaste con esa pregunta. 🤔 Intenta con otra cosa.",
+    "No estoy seguro de qué hablas, {nombre}. 🤷‍♂️ Prueba con 'Costos' o 'Sistemas'.",
+    "Ese dato se me escapa. 🧐 ¿Podrías ser más específico?",
 ]
 
 FRASES_REINICIO = [
-    "🔄 Conversación reiniciada. ¡Empecemos de cero! ¿Qué necesitas?",
-    "🧹 Memoria borrada. ¿De qué quieres hablar ahora?",
-    "Listo, borrón y cuenta nueva. 🔄 ¿En qué te ayudo?",
-    "Entendido. Reiniciamos la charla. ¿Qué más te interesa?"
+    "🔄 Conversación reiniciada. ¡Empecemos de cero! ¿Cuál es tu nombre?", # Vuelve a pedir nombre al reiniciar
+    "🧹 Memoria borrada. Hola de nuevo, ¿cómo te llamas?",
+    "Listo, borrón y cuenta nueva. 🔄 ¿Me recuerdas tu nombre?"
 ]
 
 # =========================================================
-# 3. MAPA DE CONOCIMIENTO
+# 1. MAPAS DE CONOCIMIENTO (Sin cambios)
 # =========================================================
 SINONIMOS_CARRERAS = {
     "Ingeniería en Sistemas Computacionales": ["sistemas", "systemas", "programacion", "computacion", "desarrollo", "software", "codigo", "isc"],
@@ -86,9 +84,7 @@ INTENCIONES = {
     "negacion": ["no", "nel", "asi dejalo", "gracias"]
 }
 
-# =========================================================
-# 4. FUNCIONES AUXILIARES
-# =========================================================
+# Funciones Auxiliares
 def limpiar_texto(texto):
     texto = texto.lower()
     return ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
@@ -106,11 +102,10 @@ def detectar_mejor_coincidencia(texto_usuario, diccionario):
 def consultar_gemini(contexto, pregunta_usuario):
     if not USAR_GEMINI: return contexto 
     prompt = f"""
-    Eres AulaBot, el asistente virtual amigable del ITSCH.
-    INFORMACIÓN OFICIAL (Contexto): "{contexto}"
-    USUARIO DICE: "{pregunta_usuario}"
-    TU TAREA: Responde al usuario basándote EXCLUSIVAMENTE en la Información Oficial. 
-    - Sé amable, usa emojis 🎓✨. Si es una lista, mantenla ordenada.
+    Eres AulaBot del ITSCH.
+    INFORMACIÓN OFICIAL: "{contexto}"
+    USUARIO: "{pregunta_usuario}"
+    TAREA: Responde amable y profesionalmente usando SOLO la info oficial. 
     """
     try:
         response = genai.GenerativeModel('gemini-pro').generate_content(prompt)
@@ -118,23 +113,45 @@ def consultar_gemini(contexto, pregunta_usuario):
     except: return contexto 
 
 # =========================================================
-# 5. LÓGICA PRINCIPAL (CEREBRO)
+# 3. LÓGICA PRINCIPAL (CEREBRO CON NOMBRE)
 # =========================================================
 def generar_respuesta(mensaje, user_id, general, carreras, materias):
     mensaje_limpio = limpiar_texto(mensaje)
     memoria = obtener_memoria(user_id)
     intencion = detectar_mejor_coincidencia(mensaje_limpio, INTENCIONES)
 
-    # --- BLOQUE 1: Reinicio ---
+    # --- 0. REINICIO ---
     if 'reiniciar' in mensaje_limpio or 'salir' in mensaje_limpio:
         reset_memoria(user_id)
         return random.choice(FRASES_REINICIO)
 
-    # --- BLOQUE 2: Ayuda / Saludo (Con variabilidad) ---
+    # --- 1. FLUJO DE NOMBRE (NUEVO) ---
+    # Si no tenemos nombre guardado, preguntamos o capturamos
+    nombre_usuario = memoria.get('nombre_usuario', '')
+
+    # Caso A: Estamos esperando el nombre (paso 2)
+    if memoria.get('esperando_nombre'):
+        # Asumimos que el mensaje actual ES el nombre
+        nombre_capturado = mensaje.strip().title() # Capitalizar (Juan Perez)
+        # Guardamos en memoria
+        memoria['nombre_usuario'] = nombre_capturado
+        memoria['esperando_nombre'] = False # Ya no esperamos
+        guardar_memoria(user_id, memoria)
+        
+        return f"¡Mucho gusto, **{nombre_capturado}**! 🎓 Ahora sí, ¿en qué te puedo ayudar? (Carreras, Costos, Ubicación...)"
+
+    # Caso B: No tenemos nombre y es el primer mensaje (paso 1)
+    if not nombre_usuario:
+        # Activamos la espera
+        memoria['esperando_nombre'] = True
+        guardar_memoria(user_id, memoria)
+        return "¡Hola! 👋 Soy AulaBot, tu asistente del ITSCH. Antes de empezar, ¿cómo te llamas?"
+
+    # --- 2. SALUDO / AYUDA (Ya con nombre) ---
     if intencion == "ayuda" or intencion == "saludo":
         saludo_inicial = ""
         if intencion == "saludo":
-            saludo_inicial = random.choice(FRASES_SALUDO) + "\n\n"
+            saludo_inicial = random.choice(FRASES_SALUDO_CON_NOMBRE).format(nombre=nombre_usuario) + "\n\n"
 
         menu_completo = (
             "🤖 **Menú de Capacidades**\n\n"
@@ -142,25 +159,25 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             "🏛️ **Institución:** Misión, Historia, Directorio.\n"
             "💵 **Admin:** Costos, Inscripción, Titulación, Becas.\n"
             "⚽ **Vida:** Deportes, Cafetería, Inglés.\n\n"
-            "👇 **¡Toca una opción o escribe tu duda!**"
+            "👇 **¡Dime qué necesitas, {nombre}!**".format(nombre=nombre_usuario)
         )
         return saludo_inicial + menu_completo
     
-    # --- BLOQUE 3: Lista de Carreras ---
+    # --- 3. LISTADO DE CARRERAS ---
     if intencion == "carreras_lista":
         lista = listar_carreras(carreras)
-        return consultar_gemini(f"Las carreras son:\n{lista}", "Da la lista amablemente.")
+        return consultar_gemini(f"Las carreras son:\n{lista}", f"Dile a {nombre_usuario} la lista amablemente.")
 
-    # --- BLOQUE 4: Jefe de Carrera ---
+    # --- 4. JEFE DE CARRERA ---
     if intencion == "jefes":
         posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
         if posible_carrera:
             info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
             if info and info.get('jefe_division'):
-                return consultar_gemini(f"Jefe de {info['nombre']}: {info['jefe_division']}", "Dilo amable.")
-        return "Para decirte el Jefe, necesito la carrera (ej: 'Jefe de Sistemas')."
+                return consultar_gemini(f"Jefe de {info['nombre']}: {info['jefe_division']}", f"Dile a {nombre_usuario} quién es el jefe.")
+        return f"Para decirte el Jefe, necesito la carrera, {nombre_usuario} (ej: 'Jefe de Sistemas')."
 
-    # --- BLOQUE 5: Materias (Flujo Directo) ---
+    # --- 5. MATERIAS ---
     if intencion == "materias":
         posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
         if posible_carrera:
@@ -169,13 +186,12 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             guardar_memoria(user_id, memoria)
             
             res = materias_todas(posible_carrera, materias)
-            # Aquí usamos la frase variable
-            frase = random.choice(FRASES_MATERIAS).format(carrera=posible_carrera) 
+            frase = random.choice(FRASES_MATERIAS).format(carrera=posible_carrera, nombre=nombre_usuario) 
             return f"{frase}\n\n{res}\n\n(Filtra escribiendo el número de semestre)."
         
-        return "Para ver las materias, necesito la carrera. Ejemplo: **'Materias de Industrial'**."
+        return f"Para ver las materias, necesito la carrera, {nombre_usuario}. Ejemplo: **'Materias de Industrial'**."
 
-    # --- BLOQUE 6: Info General de Carrera ---
+    # --- 6. INFO DE CARRERA ---
     posible_carrera = detectar_mejor_coincidencia(mensaje_limpio, SINONIMOS_CARRERAS)
     if posible_carrera:
         memoria['carrera_seleccionada'] = posible_carrera
@@ -185,9 +201,9 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
         info = next((c for c in carreras if c['nombre'] == posible_carrera), None)
         if info:
             ctx = f"Carrera: {info['nombre']} ({info['clave']}). Jefe: {info.get('jefe_division','N/A')}. Descripción: {info['descripcion']}. Perfil: {info.get('perfil_ingreso','')}. Campo: {info.get('perfil_egreso','')}."
-            return consultar_gemini(ctx, "Presenta esta carrera y pregunta si quiere ver materias.")
+            return consultar_gemini(ctx, f"Presenta esta carrera a {nombre_usuario} y pregunta si quiere ver materias.")
 
-    # --- BLOQUE 7: Contexto Activo (Ya eligió carrera) ---
+    # --- 7. CONTEXTO ACTIVO ---
     if memoria.get('carrera_seleccionada'):
         carrera_sel = memoria['carrera_seleccionada']
         
@@ -195,12 +211,15 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
              memoria['modo_materias'] = True
              guardar_memoria(user_id, memoria)
              res = materias_todas(carrera_sel, materias)
-             frase = random.choice(FRASES_MATERIAS).format(carrera=carrera_sel)
+             frase = random.choice(FRASES_MATERIAS).format(carrera=carrera_sel, nombre=nombre_usuario)
              return f"{frase}\n\n{res}"
         
         if intencion == "negacion":
-            reset_memoria(user_id)
-            return "Entendido. Volvemos al inicio. ¿Qué más deseas consultar?"
+            # No borramos el nombre, solo el contexto de la carrera
+            del memoria['carrera_seleccionada']
+            if 'modo_materias' in memoria: del memoria['modo_materias']
+            guardar_memoria(user_id, memoria)
+            return f"Entendido, {nombre_usuario}. Volvemos al inicio. ¿Qué más deseas consultar?"
 
         if memoria.get('modo_materias'):
             nums = re.findall(r'\d+', mensaje_limpio)
@@ -211,9 +230,9 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
             if score > 75:
                 m = next(x for x in materias if x['materia'] == match and x['carrera'] == carrera_sel)
                 datos = f"Materia: {m['materia']}, Semestre: {m['semestre']}, Créditos: {m.get('horas','N/A')}."
-                return consultar_gemini(datos, "¿Qué onda con esta materia?")
+                return consultar_gemini(datos, f"Explícale la materia a {nombre_usuario}.")
 
-    # --- BLOQUE 8: Búsqueda General (CSV) ---
+    # --- 8. GENERAL ---
     mejor_match, mejor_score = None, 0
     for item in general:
         score = fuzz.partial_ratio(limpiar_texto(item['palabra_clave']), mensaje_limpio)
@@ -224,11 +243,11 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
     if mejor_score > 85:
         return consultar_gemini(mejor_match, mensaje)
 
-    # --- BLOQUE 9: Fallback (Gemini Puro + Frase Variable) ---
+    # --- 9. FALLBACK ---
     registrar_ignorancia(mensaje_limpio) 
-    prompt_fallback = f"Usuario dice: '{mensaje}'. No hay dato oficial. Responde amable si es saludo. Si no sabes, di que consultarás en escolares."
+    prompt_fallback = f"Usuario {nombre_usuario} dice: '{mensaje}'. No hay dato oficial. Responde amable."
     try:
         if USAR_GEMINI: return consultar_gemini(prompt_fallback, mensaje)
     except: pass
     
-    return random.choice(FRASES_NO_ENTENDI)
+    return random.choice(FRASES_NO_ENTENDI).format(nombre=nombre_usuario)
