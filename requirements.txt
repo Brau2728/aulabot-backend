@@ -1,11 +1,5 @@
-#fastapi
-#uvicorn
-#python-multipart
-#thefuzz
-#flask
-
-flask
-flask-cors
+fastapi
+uvicorn
+python-multipart
+thefuzz
 google-generativeai
-python-dotenv
-gunicorn
