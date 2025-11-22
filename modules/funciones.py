@@ -14,6 +14,7 @@ def _parse_horas(horas_str):
     
     parts = horas_str.split('-')
     if len(parts) == 3:
+        # T (Teóricas) - P (Prácticas) - C (Créditos)
         teoricas = parts[0]
         practicas = parts[1]
         creditos = parts[2]
@@ -21,17 +22,13 @@ def _parse_horas(horas_str):
     return f"{horas_str} hrs"
 
 def cargar_conocimiento_adquirido():
-    """Lee lo que el bot ha aprendido"""
-    if not os.path.exists(RUTA_APRENDIZAJE):
-        return {}
+    if not os.path.exists(RUTA_APRENDIZAJE): return {}
     try:
         with open(RUTA_APRENDIZAJE, "r", encoding="utf-8") as f:
             return json.load(f)
-    except:
-        return {}
+    except: return {}
 
 def guardar_nuevo_conocimiento(pregunta, respuesta):
-    """Guarda una nueva enseñanza"""
     conocimiento = cargar_conocimiento_adquirido()
     conocimiento[pregunta] = respuesta
     os.makedirs(os.path.dirname(RUTA_APRENDIZAJE), exist_ok=True)
@@ -39,7 +36,6 @@ def guardar_nuevo_conocimiento(pregunta, respuesta):
         json.dump(conocimiento, f, ensure_ascii=False, indent=4)
 
 def registrar_ignorancia(mensaje_usuario):
-    """Guarda en un archivo de texto lo que el bot no entendió"""
     archivo = "data/preguntas_sin_respuesta.txt"
     os.makedirs(os.path.dirname(archivo), exist_ok=True)
     with open(archivo, "a", encoding="utf-8") as f:
@@ -65,33 +61,31 @@ def leer_csv(nombre_archivo):
 def listar_carreras(carreras_data):
     """Genera una lista formateada de todas las carreras."""
     lista = []
-    
-    nombres_carrera = [
-        carrera['nombre'].replace("Ingeniería en ", "").replace("Ingeniería ", "")
-        for carrera in carreras_data
-    ]
-    
-    # Formatear la lista con emojis
-    for i, nombre in enumerate(nombres_carrera):
-        lista.append(f"🎓 {i+1}. {nombre}")
-    
+    for i, carrera in enumerate(carreras_data):
+        nombre_corto = carrera['nombre'].replace("Ingeniería en ", "").replace("Ingeniería ", "")
+        lista.append(f"🎓 {i+1}. {nombre_corto} ({carrera['clave']})")
     return "\n".join(lista)
 
 # -----------------------------
-# Materias de toda la carrera
+# Materias de toda la carrera (Ahora con T-P-C)
 # -----------------------------
 def materias_todas(carrera, materias):
     materias_carrera = [m for m in materias if m['carrera'].lower() == carrera.lower()]
     if not materias_carrera:
         return "No se encontraron materias para esta carrera."
 
-    try:
-        materias_carrera.sort(key=lambda x: int(x['semestre']))
-    except ValueError:
-        pass
+    # Ordenar por semestre y asegurarse de que el parseo sea numérico
+    def sort_key(x):
+        try:
+            return int(x['semestre'])
+        except:
+            return float('inf') # Manda los no numéricos al final
+
+    materias_carrera.sort(key=sort_key)
         
     texto = ""
-    semestres = sorted(set(m['semestre'] for m in materias_carrera), key=lambda x: int(x) if x.isdigit() else x)
+    # Obtener lista de semestres únicos y ordenados (primero números, luego textos)
+    semestres = sorted(set(m['semestre'] for m in materias_carrera), key=lambda x: int(x) if x.isdigit() else float('inf'))
     
     for sem in semestres:
         texto += f"**Semestre {sem}:**\n"
@@ -104,7 +98,7 @@ def materias_todas(carrera, materias):
     return texto
 
 # -----------------------------
-# Materias por semestre
+# Materias por semestre (Ahora con T-P-C)
 # -----------------------------
 def materias_por_semestre(carrera, semestre, materias):
     semestre_str = str(semestre)
@@ -112,7 +106,7 @@ def materias_por_semestre(carrera, semestre, materias):
     if not materias_carrera:
         return f"No se encontraron materias para el semestre {semestre}."
 
-    texto = f"**Semestre {semestre} de {carrera}:**\n"
+    texto = f"**Semestre {semestre}:**\n"
     for m in materias_carrera:
         parsed_horas = _parse_horas(m.get('horas', 'N/A'))
         texto += f"  - {m['materia']} ({m['clave']}) - {parsed_horas}\n"

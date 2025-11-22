@@ -1,31 +1,615 @@
-carrera,semestre,materia,clave,horas,creditos,prerrequisito
-Ingeniería en Sistemas Computacionales,1,Cálculo Diferencial,ACF-0901,5,5,Ninguno
-Ingeniería en Sistemas Computacionales,1,Taller de Ética,ACA-0907,4,4,Ninguno
-Ingeniería en Sistemas Computacionales,2,Cálculo Integral,ACF-0902,5,5,Cálculo Diferencial
-Ingeniería en Sistemas Computacionales,2,Programación Orientada a Objetos,AED-1286,5,5,Fundamentos de Programación
-Ingeniería en Sistemas Computacionales,3,Estructura de Datos,AED-1287,5,5,Programación Orientada a Objetos
-Ingeniería en Sistemas Computacionales,4,Taller de Sistemas Operativos,SCA-1026,4,4,Sistemas Operativos
-Ingeniería en Sistemas Computacionales,6,Ingeniería de Software,SCD-1011,5,5,Análisis y Modelado
-Ingeniería en Sistemas Computacionales,7,Inteligencia Artificial,SCC-1012,5,5,Matemáticas Discretas
-Ingeniería en Sistemas Computacionales,8,Programación de Móviles,ESP-movil,5,5,Programación Web
-Ingeniería en Sistemas Computacionales,8,Diseño de UI/UX,ESP-ux,4,4,Ingeniería de Software
-Ingeniería Mecatrónica,1,Química,AEC-1058,4,4,Ninguno
-Ingeniería Mecatrónica,3,Estática,MEF-1010,5,5,Física General
-Ingeniería Mecatrónica,4,Dinámica,MEF-1007,5,5,Estática
-Ingeniería Mecatrónica,6,Microcontroladores,MTF-1019,5,5,Electrónica Digital
-Ingeniería Mecatrónica,7,Robótica,MTD-1026,5,5,Mecanismos
-Ingeniería Mecatrónica,8,Introducción a la Industria 4.0,ESP-ind4,5,5,Automatización
-Ingeniería Industrial,1,Taller de Ética,ACA-0907,4,4,Ninguno
-Ingeniería Industrial,3,Estadística Inferencial I,GEF-0907,5,5,Probabilidad
-Ingeniería Industrial,4,Estudio del Trabajo I,INJ-1011,6,6,Ninguno
-Ingeniería Industrial,5,Control Estadístico de la Calidad,INF-1007,5,5,Estadística Inferencial
-Ingeniería Industrial,7,Logística y Cadenas de Suministro,INC-1019,4,4,Investigación de Operaciones
-Ingeniería Industrial,8,Sistemas de Manufactura,INF-1028,5,5,Gestión de Producción
-Ingeniería Bioquímica,3,Fenómenos de Transporte I,IBQ-1005,5,5,Cálculo Vectorial
-Ingeniería Bioquímica,5,Microbiología,IBF-1015,5,5,Biología
-Ingeniería Bioquímica,7,Ingeniería de Biorreactores,IBQ-1008,5,5,Cinética Química
-Ingeniería en Nanotecnología,4,Física del Estado Sólido,NAF-1010,5,5,Física Moderna
-Ingeniería en Nanotecnología,6,Síntesis de Nanomateriales,NAF-1025,5,5,Química Orgánica
-Ingeniería en Innovación Agrícola Sustentable,2,Botánica Aplicada,ASF-1005,5,5,Biología Celular
-Ingeniería en Innovación Agrícola Sustentable,4,Edafología,ASF-1009,5,5,Química Agrícola
-Ingeniería en Innovación Agrícola Sustentable,7,Agroecología,ASC-1001,4,4,Desarrollo Sustentable
+carrera,semestre,materia,clave,horas
+
+Ingeniería en Sistemas Computacionales,1,Cálculo Diferencial,ACF-0901,3-2-5
+Ingeniería en Sistemas Computacionales,1,Fundamentos de Programación,AED-1285,2-3-5
+Ingeniería en Sistemas Computacionales,1,Taller de Ética,ACA-0907,0-4-4
+Ingeniería en Sistemas Computacionales,1,Matemáticas Discretas,AEF-1041,3-2-5
+Ingeniería en Sistemas Computacionales,1,Taller de Administración,SCH-1024,1-3-4
+Ingeniería en Sistemas Computacionales,1,Fundamentos de Investigación,ACC-0906,2-2-4
+
+Ingeniería en Sistemas Computacionales,2,Cálculo Integral,ACF-0902,3-2-5
+Ingeniería en Sistemas Computacionales,2,Programación Orientada a Objetos,AED-1286,2-3-5
+Ingeniería en Sistemas Computacionales,2,Contabilidad Financiera,AEC-1008,2-2-4
+Ingeniería en Sistemas Computacionales,2,Química,AEC-1058,2-2-4
+Ingeniería en Sistemas Computacionales,2,Álgebra Lineal,ACF-0903,3-2-5
+Ingeniería en Sistemas Computacionales,2,Probabilidad y Estadística,AEF-1052,3-2-5
+
+Ingeniería en Sistemas Computacionales,3,Cálculo Vectorial,ACF-0904,3-2-5
+Ingeniería en Sistemas Computacionales,3,Estructura de Datos,AED-1026,2-3-5
+Ingeniería en Sistemas Computacionales,3,Cultura Empresarial,SCC-1005,2-2-4
+Ingeniería en Sistemas Computacionales,3,Investigación de Operaciones,SCC-1013,2-2-4
+Ingeniería en Sistemas Computacionales,3,Desarrollo Sustentable,ACD-0908,2-3-5
+Ingeniería en Sistemas Computacionales,3,Física General,SCF-1006,3-2-5
+
+Ingeniería en Sistemas Computacionales,4,Ecuaciones Diferenciales,ACF-0905,3-2-5
+Ingeniería en Sistemas Computacionales,4,Métodos Numéricos,SCC-1017,2-2-4
+Ingeniería en Sistemas Computacionales,4,Tópicos Avanzados de Programación,SCD-1027,2-3-5
+Ingeniería en Sistemas Computacionales,4,Fundamentos de Bases de Datos,AEF-1031,3-2-5
+Ingeniería en Sistemas Computacionales,4,Fundamentos de Ingeniería de Software,SCC-1007,2-2-4
+Ingeniería en Sistemas Computacionales,4,Principios Eléctricos Y aplicaciones Digitales,SCD-1018,2-3-5
+
+Ingeniería en Sistemas Computacionales,5,Programación Web,AEB-1055,1-4-5
+Ingeniería en Sistemas Computacionales,5,Fundamentos de Telecomunicaciones,AEC-1034,2-2-4
+Ingeniería en Sistemas Computacionales,5,Sistemas Operativos,AEC-1061,2-2-4
+Ingeniería en Sistemas Computacionales,5,Taller de Bases de Datos,SCA-1025,0-4-4
+Ingeniería en Sistemas Computacionales,5,Ingeniería de Software,SCD-1011,2-3-5
+Ingeniería en Sistemas Computacionales,5,Arquitectura de Computadoras,SCD-1003,2-3-5
+
+Ingeniería en Sistemas Computacionales,6,Lenguajes y Autómatas I,SCD-1015,2-3-5
+Ingeniería en Sistemas Computacionales,6,Redes de computadoras,SCD-1021,2-3-5
+Ingeniería en Sistemas Computacionales,6,Taller de Sistemas Operativos,SCA-1026,0-4-4
+Ingeniería en Sistemas Computacionales,6,Administración de Bases de Datos,SCB-1001,1-4-5
+Ingeniería en Sistemas Computacionales,6,Simulación,SCD-1022,2-3-5
+Ingeniería en Sistemas Computacionales,6,Diseño de UI/UX,PMD-2401,2-3-5
+
+Ingeniería en Sistemas Computacionales,7,Lenguajes y Autómatas II,SCD-1016,2-3-5
+Ingeniería en Sistemas Computacionales,7,Conmutación y Enrutamiento en Redes de datos,SCD-1004,2-3-5
+Ingeniería en Sistemas Computacionales,7,Taller de Investigación I,ACA-0909,0-4-4
+Ingeniería en Sistemas Computacionales,7,Programación de Móviles I,PMB-2403,1-4-5
+Ingeniería en Sistemas Computacionales,7,Gestión de Proyectos de Software,SCG-1009,3-3-6
+Ingeniería en Sistemas Computacionales,7,Metodologías Ágiles de Desarrollo de Software,PMD-2402,2-3-5
+
+Ingeniería en Sistemas Computacionales,8,Programación Lógica y Funcional,SCC-1019,2-2-4
+Ingeniería en Sistemas Computacionales,8,Administración de Redes,SCA-1002,0-4-4
+Ingeniería en Sistemas Computacionales,8,Taller de Investigación II,ACA-0910,0-4-4
+Ingeniería en Sistemas Computacionales,8,Programación de Móviles II,PMB-2404,1-4-5
+Ingeniería en Sistemas Computacionales,8,Sistemas Programables,SCC-1023,2-2-4
+Ingeniería en Sistemas Computacionales,8,Lenguajes de Interfaz,SCC-2014,2-2-4
+
+Ingeniería en Sistemas Computacionales,9,Inteligencia Artificial,SCC-1012,2-2-4
+Ingeniería en Sistemas Computacionales,9,Graficación,SCC-1010,2-2-4
+Ingeniería en Sistemas Computacionales,9,Programación de Móviles III,PMB-2405,1-4-5
+
+
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,1,Cálculo Diferencial,ACF-0901,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,1,Fundamentos de Programación,AEF-1032,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,1,Matemáticas Discretas I,TIF-1019,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,1,Introducción a las TIC's,TIP-1017,3-0-3
+Ingeniería en Tecnologías de la Información y Comunicaciones,1,Taller de Ética,ACA-0907,0-4-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,1,Fundamentos de Investigación,ACC-0906,2-2-4
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,2,Cálculo Integral,ACF-0902,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,2,Programación Orientada a Objetos,AEB-1054,1-4-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,2,Matemáticas Discretas II,TIF-1020,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,2,Probabilidad y Estadística,AEF-1052,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,2,Contabilidad y Costos,TIF-1009,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,2,Álgebra Lineal,ACF-0903,3-2-5
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,3,Matemáticas para la Toma de Decisiones,TIF-1021,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,3,Estructuras y Organización de Datos,TID-1012,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,3,Administración Gerencial,TIC-1002,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,3,Fundamentos de Base de Datos,AEF-1031,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,3,Electricidad y Magnetismo,TIC-1011,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,3,Ingeniería de Software,TIC-1014,2-2-4
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,4,Fundamentos de Redes,TIF-1013,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,4,Programación II,TIB-1024,1-4-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,4,Matemáticas Aplicadas a Comunicaciones,TIE-1018,3-1-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,4,Taller de Base de Datos,AEA-1063,1-3-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,4,Circuitos Eléctricos y Electrónicos,TID-1008,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,4,Taller de Ingeniería de Software,TIC-1027,1-4-5
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,5,Redes de Computadora,TIF-1025,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,5,Análisis de Señales y Sistemas de Comunicación,TID-1004,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,5,Administración de Proyectos,TIF-1001,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,5,Base de Datos Distribuidas,TIF-1007,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,5,Arquitectura de Computadoras,TIC-1005,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,5,Sistemas Operativos I,AEC-1061,2-2-4
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,6,Telecomunicaciones,TIF-1029,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,6,Tecnologías Inalámbricas,TIC-1028,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,6,Programación WEB,AEB-1055,1-4-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,6,Desarrollo Sustentable,ACD-0908,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,6,Desarrollo de Emprendedores,TID-1010,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,6,Sistemas Operativos II,AED-1062,2-2-4
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,7,Redes Emergentes,TIF-1026,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,7,Desarrollo de Aplicaciones para Dispositivos Móviles,AEB-1011,1-4-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,7,Taller de Investigación I,ACA-0909,0-4-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,7,Interacción Humano Computadora,TIH-1016,1-3-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,7,Negocios Electrónicos I,TIC-1022,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,7,Diseño Multimedia,,2-3-5
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,8,Administración y Seguridad de Redes,TIB-1003,3-2-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,8,Auditoría en Tecnologías de la Información,TIC-1006,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,8,Taller de Investigación II,ACA-0910,0-4-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,8,Ingeniería del Conocimiento,TIC-1015,2-2-4
+Ingeniería en Tecnologías de la Información y Comunicaciones,8,Negocios Electrónicos II,TIC-1023,2-2-4
+
+Ingeniería en Tecnologías de la Información y Comunicaciones,9,Administración de Servidores,TWD-2002,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,9,Administración Estratégica de TI,TWD-2003,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,9,Hacking Ético,TWD-2004,2-3-5
+Ingeniería en Tecnologías de la Información y Comunicaciones,9,Tecnologías Web FrontEnd,TWB-2005,1-4-5
+
+
+
+
+Ingeniería Industrial,1,Cálculo Diferencial,ACF-0901,3-2-5
+Ingeniería Industrial,1,Taller de Ética,ACA-0907,0-4-4
+Ingeniería Industrial,1,Taller de Investigación I,ACA-0909,0-4-4
+Ingeniería Industrial,1,Taller de Probabilidad y Estadística,INC-1027,1-3-4
+Ingeniería Industrial,1,Química,INC-1025,2-2-4
+Ingeniería Industrial,1,Fundamentos de Investigación,ACC-0909,2-2-4
+
+Ingeniería Industrial,2,Cálculo Integral,INC-1024,2-2-4
+Ingeniería Industrial,2,Propiedad de los Materiales,INC-1014,2-2-4
+Ingeniería Industrial,2,Taller de Investigación II,ACA-0910,0-4-4
+Ingeniería Industrial,2,Investigación de Operaciones I,INH-1029,2-2-4
+Ingeniería Industrial,2,Análisis de la Realidad Nacional,INC-1002,2-2-4
+Ingeniería Industrial,2,Actividades Complementarias,,0-4-4
+
+Ingeniería Industrial,3,Lenguajes de Programación,ACF-0902,3-2-5
+Ingeniería Industrial,3,Álgebra Lineal,ACF-0903,3-2-5
+Ingeniería Industrial,3,Ingeniería Económica,AEC-1037,2-2-4
+Ingeniería Industrial,3,Investigación de Operaciones II,AEC-1053,2-4-6
+Ingeniería Industrial,3,Estadística Inferencial I,AEF-1024,3-2-5
+Ingeniería Industrial,3,Dibujo Industrial,INC-1008,0-6-6
+
+Ingeniería Industrial,4,Cálculo Vectorial,ACF-0904,3-2-5
+Ingeniería Industrial,4,Física,INC-1013,3-2-5
+Ingeniería Industrial,4,Administración de las Operaciones I,INC-1021,2-2-4
+Ingeniería Industrial,4,Economía,INC-1018,2-2-4
+Ingeniería Industrial,4,Estadística Inferencial II,AEF-1025,3-2-5
+Ingeniería Industrial,4,Estudio del Trabajo I,INC-1030,4-2-6
+
+Ingeniería Industrial,5,Administración,INC-1026,2-2-4
+Ingeniería Industrial,5,Algoritmos y Programación,INC-1005,2-2-4
+Ingeniería Industrial,5,Administración de las Operaciones II,INC-1022,2-2-4
+Ingeniería Industrial,5,Simulación,INF-1028,2-2-4
+Ingeniería Industrial,5,Estudio del Trabajo II,INC-1019,4-2-6
+Ingeniería Industrial,5,Higiene y Seguridad Industrial,INF-1016,3-2-5
+
+Ingeniería Industrial,6,Metrología y Normalización,INC-1009,2-2-4
+Ingeniería Industrial,6,Gestión de Costos,INC-1015,2-2-4
+Ingeniería Industrial,6,Planeación Financiera,INC-1001,2-2-4
+Ingeniería Industrial,6,Tópicos de Manufactura,SEM-2402,2-4-6
+Ingeniería Industrial,6,Control Estadístico de la Calidad,INF-1007,3-2-5
+Ingeniería Industrial,6,Desarrollo Sustentable,ACD-0908,2-3-5
+
+Ingeniería Industrial,7,Electricidad y Electrónica Industrial,AEC-1048,2-2-4
+Ingeniería Industrial,7,Proyectos,INR-1003,2-1-3
+Ingeniería Industrial,7,Planeación y Diseño de Instalaciones,INC-1002,2-2-4
+Ingeniería Industrial,7,Herramientas Core Tools,AEC-1018,2-2-4
+Ingeniería Industrial,7,Ergonomía,INF-1010,2-2-4
+Ingeniería Industrial,7,Logística y Cadenas de Suministro,INH-1020,1-3-4
+
+Ingeniería Industrial,8,Procesos de Fabricación,INC-1023,2-2-4
+Ingeniería Industrial,8,Mejora de la Calidad en los Servicios,SEC-2401,2-2-4
+Ingeniería Industrial,8,Formulación y Evaluación de Proyectos,AED-1030,2-3-5
+Ingeniería Industrial,8,Sistemas de Manufactura Automatizados,SEB-2406,2-2-4
+Ingeniería Industrial,8,Administración del Mantenimiento,INC-1004,2-2-4
+Ingeniería Industrial,8,Gestión de los Sistemas de Calidad,INC-1015,2-2-4
+
+Ingeniería Industrial,9,Medición y Mejoramiento de la Productividad,SEM-2405,2-4-6
+Ingeniería Industrial,9,Lean Manufacturing,SEC-2403,2-2-4
+Ingeniería Industrial,10,Seis Sigma,SEM-2404,2-4-6
+
+Ingeniería Industrial,9,Relaciones Industriales,INC-1026,2-2-4
+Ingeniería Industrial,9,Mercadotecnia,AED-1044,2-3-5
+Ingeniería Industrial,9,Ingeniería de Sistemas,INR-1017,2-1-3
+
+
+
+
+Ingeniería Mecatrónica,1,Química,AEC-1058,2-2-4
+Ingeniería Mecatrónica,1,Cálculo Diferencial,ACF-2301,3-2-5
+Ingeniería Mecatrónica,1,Taller de Ética,ACH-2307,1-3-4
+Ingeniería Mecatrónica,1,Dibujo Asistido por Computadora,AEA-1013,0-4-4
+Ingeniería Mecatrónica,1,Metrología y Normalización,AEC-1047,2-2-4
+Ingeniería Mecatrónica,1,Fundamentos de Investigación,ACC-0906,2-2-4
+
+Ingeniería Mecatrónica,2,Cálculo Integral,ACF-0902,3-2-5
+Ingeniería Mecatrónica,2,Álgebra Lineal,ACF-0903,3-2-5
+Ingeniería Mecatrónica,2,Ciencia e Ingeniería de Materiales,MTF-1004,3-2-5
+Ingeniería Mecatrónica,2,Programación Básica,MTD-1024,2-3-5
+Ingeniería Mecatrónica,2,Estadística y Control de Calidad,MTC-1014,2-2-4
+Ingeniería Mecatrónica,2,Administración y Contabilidad,MTC-1001,2-2-4
+
+Ingeniería Mecatrónica,3,Cálculo Vectorial,ACF-0904,3-2-5
+Ingeniería Mecatrónica,3,Procesos de Fabricación,MTC-1022,2-2-4
+Ingeniería Mecatrónica,3,Electromagnetismo,AEF-1020,3-2-5
+Ingeniería Mecatrónica,3,Estática,MTC-1015,2-2-4
+Ingeniería Mecatrónica,3,Métodos Numéricos,AEC-1046,2-2-4
+Ingeniería Mecatrónica,3,Desarrollo Sustentable,ACD-0908,2-3-5
+
+Ingeniería Mecatrónica,4,Ecuaciones Diferenciales,ACF-0905,3-2-5
+Ingeniería Mecatrónica,4,Fundamentos de Termodinámica,MTC-1017,2-2-4
+Ingeniería Mecatrónica,4,Mecánica de Materiales,MTJ-1020,4-2-6
+Ingeniería Mecatrónica,4,Dinámica,MTC-1008,2-2-4
+Ingeniería Mecatrónica,4,Análisis de Circuitos Eléctricos,MTJ-1002,4-2-6
+Ingeniería Mecatrónica,4,Taller de Investigación II,ACA-0910,0-4-4
+
+Ingeniería Mecatrónica,5,Máquinas Eléctricas,AEF-1040,3-2-5
+Ingeniería Mecatrónica,5,Electrónica Analógica,MTJ-1011,4-2-6
+Ingeniería Mecatrónica,5,Mecanismos,AED-1043,2-3-5
+Ingeniería Mecatrónica,5,Análisis de Fluidos,MTC-1003,2-2-4
+Ingeniería Mecatrónica,5,Taller de Investigación I,ACA-0909,0-4-4
+Ingeniería Mecatrónica,5,Programación Avanzada,MTG-1023,2-3-5
+
+Ingeniería Mecatrónica,6,Electrónica de Potencia Aplicada,MTJ-1012,4-2-6
+Ingeniería Mecatrónica,6,Instrumentación,AEF-1038,3-2-5
+Ingeniería Mecatrónica,6,Diseño de Elementos Mecánicos,MTF-1010,3-2-5
+Ingeniería Mecatrónica,6,Electrónica Digital,MTF-1013,3-2-5
+Ingeniería Mecatrónica,6,Vibraciones Mecánicas,AED-1067,2-3-5
+Ingeniería Mecatrónica,6,Introducción al Moldeo por Inyección,MAR-23,1-3-4
+
+Ingeniería Mecatrónica,7,Dinámica de Sistemas,MTF-1009,3-2-5
+Ingeniería Mecatrónica,7,Manufactura Avanzada,MTD-1019,2-3-5
+Ingeniería Mecatrónica,7,Circuitos Hidráulicos y Neumáticos,MTG-1005,3-3-6
+Ingeniería Mecatrónica,7,Mantenimiento,MTF-1018,3-2-5
+Ingeniería Mecatrónica,7,Microcontroladores,MTF-1021,3-2-5
+
+Ingeniería Mecatrónica,8,Control,MTJ-1006,4-2-6
+Ingeniería Mecatrónica,8,Formulación y Evaluación de Proyectos,MTO-1016,0-3-3
+Ingeniería Mecatrónica,8,Controladores Lógicos Programables,MTD-1007,2-3-5
+Ingeniería Mecatrónica,8,Factores del Trabajo,MAR-2301,2-1-3
+Ingeniería Mecatrónica,8,Interfaces y Redes Industriales,MAH-2302,1-3-4
+
+Ingeniería Mecatrónica,9,Robótica,MTF-1025,3-2-5
+Ingeniería Mecatrónica,9,Introducción a la Industria 4.0,MAD-2304,2-3-5
+Ingeniería Mecatrónica,9,Control y Automatización de Procesos,MAD-2305,2-3-5
+Ingeniería Mecatrónica,9,Diseño de Moldes de Inyección,MAD-2306,2-3-5
+
+
+
+Ingeniería en Gestión Empresarial,1,Fundamentos de Investigación,ACC-0906,2-2-4 
+Ingeniería en Gestión Empresarial,1,Cálculo Diferencial,ACF-2301,3-2-5 
+Ingeniería en Gestión Empresarial,1,Desarrollo Humano,GEC-2305,2-2-4 
+Ingeniería en Gestión Empresarial,1,Fundamentos de Gestión Empresarial,AEF-1074,3-2-5 
+Ingeniería en Gestión Empresarial,1,Fundamentos de Física,GEC-0909,2-2-4 
+Ingeniería en Gestión Empresarial,1,Fundamentos de Química,GEE-0918,3-1-4 
+
+Ingeniería en Gestión Empresarial,2,Software de aplicación ejecutivo,AEB-1082,1-4-5 
+Ingeniería en Gestión Empresarial,2,Cálculo Integral,ACF-0902,3-2-5 
+Ingeniería en Gestión Empresarial,2,Contabilidad Orientada a los Negocios,GED-0903,2-3-5 
+Ingeniería en Gestión Empresarial,2,Dinámica Social,AEC-1014,2-2-4 
+Ingeniería en Gestión Empresarial,2,Taller de Ética,ACH-2307,1-3-4 
+Ingeniería en Gestión Empresarial,2,Álgebra Lineal,ACF-0903,3-2-5 
+
+Ingeniería en Gestión Empresarial,3,Marco legal de las Organizaciones,GEF-0916,3-2-5 
+Ingeniería en Gestión Empresarial,3,Legislación Laboral,AEC-1078,2-2-4 
+Ingeniería en Gestión Empresarial,3,Probabilidad y Estadística Descriptiva,GED-0921,2-3-5 
+Ingeniería en Gestión Empresarial,3,Costos Empresariales,GED-0904,2-3-5 
+Ingeniería en Gestión Empresarial,3,Habilidades Directivas I,GEC-0913,2-2-4 
+Ingeniería en Gestión Empresarial,3,Estadística Inferencial I,GEG-0907,3-3-6 
+
+Ingeniería en Gestión Empresarial,4,Ingeniería Económica,AEF-1073,3-2-5 
+Ingeniería en Gestión Empresarial,4,Economía Empresarial,AEF-1071,3-2-5 
+Ingeniería en Gestión Empresarial,4,Entorno Macroeconómico,GEF-0906,3-2-5 
+Ingeniería en Gestión Empresarial,4,Investigación de Operaciones,AEF-1076,3-2-5 
+Ingeniería en Gestión Empresarial,4,Estadística Inferencial II,GEG-0908,3-3-6 
+Ingeniería en Gestión Empresarial,4,Ingeniería de Procesos,GEF-0915,3-2-5 
+
+Ingeniería en Gestión Empresarial,5,Finanzas en las Organizaciones,GEF-0910,3-2-5 
+Ingeniería en Gestión Empresarial,5,Instrumentos de Presupuestación Empresarial,GED-0917,2-3-5 
+Ingeniería en Gestión Empresarial,5,Habilidades Directivas II,GEC-0914,2-2-4 
+Ingeniería en Gestión Empresarial,5,Gestión del Capital Humano,AEG-1075,3-3-6 
+Ingeniería en Gestión Empresarial,5,Taller de Investigación I,ACA-0909,0-4-4 
+Ingeniería en Gestión Empresarial,5,Mercadotecnia,GEF-0919,3-2-5 
+
+Ingeniería en Gestión Empresarial,6,Admon de la Salud y Seguridad Ocupacional,GEF-0901,3-2-5 
+Ingeniería en Gestión Empresarial,6,El emprendedor y la innovación,AED-1072,2-3-5 
+Ingeniería en Gestión Empresarial,6,Gestión de la Producción I,GEC-0911,2-2-4 
+Ingeniería en Gestión Empresarial,6,Diseño Organizacional,AED-1015,2-3-5 
+Ingeniería en Gestión Empresarial,6,Taller de Investigación II,ACA-0910,0-4-4 
+Ingeniería en Gestión Empresarial,6,Sistemas de Información de la Mercadotecnia,GED-0922,2-3-5 
+
+Ingeniería en Gestión Empresarial,7,Calidad Aplicada a la Gestión Empresarial,AED-1069,2-3-5 
+Ingeniería en Gestión Empresarial,7,Plan de Negocios,GED-0920,2-3-5 
+Ingeniería en Gestión Empresarial,7,Gestión de la Producción II,GEC-0912,2-2-4 
+Ingeniería en Gestión Empresarial,7,Gestión Estratégica,AED-1035,2-3-5 
+Ingeniería en Gestión Empresarial,7,Desarrollo Sustentable,ACD-0908,2-3-5 
+Ingeniería en Gestión Empresarial,7,Mercadotecnia Electrónica,AEB-1045,1-4-5 
+
+Ingeniería en Gestión Empresarial,8,Taller de relaciones públicas,DNH-2301,1-3-4 
+Ingeniería en Gestión Empresarial,8,La tecnología y su entorno,DNM-2302,2-4-6 
+Ingeniería en Gestión Empresarial,8,Cadena de suministros,GEF-0902,3-2-5 
+Ingeniería en Gestión Empresarial,8,Desarrollo de nuevos productos,DNM-2303,2-4-6 
+Ingeniería en Gestión Empresarial,8,Decisiones mercadológicas,DNM-2304,2-4-6 
+
+Ingeniería en Gestión Empresarial,9,Taller de destrezas directivas,DNQ-2305,1-2-3 
+Ingeniería en Gestión Empresarial,9,Trámites legales y gestión del financiamiento,DND-2306,2-3-5 
+Ingeniería en Gestión Empresarial,9,Optativa de Especialidad 3,,2-4-6
+Ingeniería en Gestión Empresarial,9,Optativa de Especialidad 4,,2-4-6
+Ingeniería en Gestión Empresarial,9,Optativa de Especialidad 5,,2-4-6
+
+
+
+
+Ingeniería en Nanotecnología,1,Química Inorgánica,AEF-1060,3-2-5
+Ingeniería en Nanotecnología,1,Probabilidad y Estadística,NAF-0920,3-2-5
+Ingeniería en Nanotecnología,1,Taller de Ética,ACH-2307,1-3-4
+Ingeniería en Nanotecnología,1,Cálculo Diferencial,ACF-2301,3-2-5
+Ingeniería en Nanotecnología,1,Lógica de Programación,NAF-0912,3-2-5
+Ingeniería en Nanotecnología,1,Seminario de Introducción a la Nanotecnología,NAK-0922,0-2-2
+
+Ingeniería en Nanotecnología,2,Química Analítica,AEG-1059,3-3-6
+Ingeniería en Nanotecnología,2,Ciencia e Ingeniería de los Materiales,NAF-0904,3-2-5
+Ingeniería en Nanotecnología,2,Mecánica Clásica,AEF-1042,3-2-5
+Ingeniería en Nanotecnología,2,Cálculo Integral,ACF-0902,3-2-5
+Ingeniería en Nanotecnología,2,Fundamentos de Química Orgánica,AEF-1033,3-2-5
+Ingeniería en Nanotecnología,2,Fundamentos de investigación,ACC-0906,2-2-4
+
+Ingeniería en Nanotecnología,3,Álgebra Lineal,ACF-0903,3-2-5
+Ingeniería en Nanotecnología,3,Fundamentos de Biología,NAF-0910,3-2-5
+Ingeniería en Nanotecnología,3,Ondas y Calor,NAF-0919,3-2-5
+Ingeniería en Nanotecnología,3,Cálculo Vectorial,ACF-0904,3-2-5
+Ingeniería en Nanotecnología,3,Química Orgánica II,NAF-0921,3-2-5
+Ingeniería en Nanotecnología,3,Estancia de Estudio y Desarrollo Profesional I,NAK-0905,0-2-2
+
+Ingeniería en Nanotecnología,4,Análisis Instrumental,AEF-1003,3-2-5
+Ingeniería en Nanotecnología,4,Biología Molecular,NAF-0902,3-2-5
+Ingeniería en Nanotecnología,4,Física del Estado Sólido,NAF-0908,3-2-5
+Ingeniería en Nanotecnología,4,Electromagnetismo,AEF-1020,3-2-5
+Ingeniería en Nanotecnología,4,Ecuaciones Diferenciales,ACF-0905,3-2-5
+Ingeniería en Nanotecnología,4,Taller de Investigación I,ACA-0909,0-4-4
+
+Ingeniería en Nanotecnología,5,Fisicoquímica,NAF-0909,3-2-5
+Ingeniería en Nanotecnología,5,Nanobiología I,NAF-0913,3-2-5
+Ingeniería en Nanotecnología,5,Nanofísica I,NAF-0915,3-2-5
+Ingeniería en Nanotecnología,5,Nanoquímica I,NAF-0917,3-2-5
+Ingeniería en Nanotecnología,5,Análisis Numérico,NAF-0901,3-2-5
+Ingeniería en Nanotecnología,5,Estancia de Estudio y Desarrollo Profesional II,NAK-0906,0-2-2
+
+Ingeniería en Nanotecnología,6,Desarrollo Sustentable,ACD-0908,2-3-5
+Ingeniería en Nanotecnología,6,Nanobiología II,NAF-0914,3-2-5
+Ingeniería en Nanotecnología,6,Nanofísica II,NAF-0916,3-2-5
+Ingeniería en Nanotecnología,6,Nanoquímica II,NAF-0916,3-2-5
+Ingeniería en Nanotecnología,6,Caracterización de Materiales,NAF-0903,3-2-5
+Ingeniería en Nanotecnología,6,Taller de Investigación II,ACA-0910,0-4-4
+
+Ingeniería en Nanotecnología,7,Introducción al modelado por computadora,NAF-0911,3-2-5
+Ingeniería en Nanotecnología,7,Síntesis de Nanomateriales,NAF-0923,3-2-5
+Ingeniería en Nanotecnología,7,Tópicos de Ingeniería y Tecnología I,NAF-0924,3-2-5
+Ingeniería en Nanotecnología,7,Tópicos de Ingeniería y Tecnología II,NAF-0925,3-2-5
+Ingeniería en Nanotecnología,7,Estancia de Estudio y Desarrollo Profesional III,NAK-0907,0-2-2
+Ingeniería en Nanotecnología,7,Aplicaciones de la Nanotecnología en la Industria,ANL-2401,4-1-5
+
+Ingeniería en Nanotecnología,8,Tópicos de Ingeniería y Tecnología III,NAF-0926,3-2-5
+Ingeniería en Nanotecnología,8,Tópicos de Ingeniería y Tecnología IV,NAF-0927,3-2-5
+Ingeniería en Nanotecnología,8,Tópicos de Ingeniería y Tecnología V,NAF-0928,3-2-5
+Ingeniería en Nanotecnología,8,Propiedades de los Nanomateriales,ANL-2402,4-1-5
+Ingeniería en Nanotecnología,8,Estructura de los Nanomateriales,ANF-2406,3-2-5
+
+Ingeniería en Nanotecnología,9,Diseño y gestión de proyectos,ANL-2403,4-1-5
+Ingeniería en Nanotecnología,9,Procesos de manufactura,ANL-2404,4-1-5
+Ingeniería en Nanotecnología,9,Nanotecnología ambiental,ANL-2405,4-1-5
+Ingeniería en Nanotecnología,9,Servicio Social,,10
+Ingeniería en Nanotecnología,9,Actividades Complementarias,,5
+
+
+
+
+Ingeniería Bioquímica,1,Fundamentos de Investigación,ACC-0906,2-2-4 
+Ingeniería Bioquímica,1,Cálculo Diferencial,ACF-0901,3-2-5 
+Ingeniería Bioquímica,1,Química,AEF-1057,3-2-5 
+Ingeniería Bioquímica,1,Taller de Ética,ACA-0907,0-4-4 
+Ingeniería Bioquímica,1,Comportamiento Organizacional,BQW-1006,2-0-2 
+Ingeniería Bioquímica,1,Dibujo asistido por computadora,AEO-1012,0-3-3 
+
+Ingeniería Bioquímica,2,Administración y Legislación de Empresas,BQP-1001,3-0-3 
+Ingeniería Bioquímica,2,Cálculo Integral,ACF-0902,3-2-5 
+Ingeniería Bioquímica,2,Química Orgánica I,BQF-1022,3-2-5 
+Ingeniería Bioquímica,2,Biología,AEF-1005,3-2-5 
+Ingeniería Bioquímica,2,Química Analítica,BQG-1021,3-3-6 
+Ingeniería Bioquímica,2,Álgebra Lineal,ACF-0903,3-2-5 
+
+Ingeniería Bioquímica,3,Cálculo Vectorial,ACF-0904,3-2-5 
+Ingeniería Bioquímica,3,Ecuaciones Diferenciales,ACF-0905,2-3-5 
+Ingeniería Bioquímica,3,Química Orgánica II,BQF-1023,3-2-5 
+Ingeniería Bioquímica,3,Termodinámica,AEF-1065,3-2-5 
+Ingeniería Bioquímica,3,Física,BQF-1010,3-2-5 
+Ingeniería Bioquímica,3,Estadística,BQF-1007,3-2-5 
+
+Ingeniería Bioquímica,4,Programación y Métodos Numéricos,BQF-1020,3-2-5 
+Ingeniería Bioquímica,4,Electro-magnetismo,AEF-1020,3-2-5 
+Ingeniería Bioquímica,4,Bioquímica,AEJ-1007,4-2-6 
+Ingeniería Bioquímica,4,Balance de Materia y Energía,AEF-1004,3-2-5 
+Ingeniería Bioquímica,4,Análisis Instrumental,BQF-1002,3-2-5 
+Ingeniería Bioquímica,4,Aseguramiento de la Calidad,BQQ-1003,1-2-3 
+
+Ingeniería Bioquímica,5,Ingeniería Económica,BQP-1015,3-0-3 
+Ingeniería Bioquímica,5,Fenómenos de Transporte I,BQJ-1008,4-2-6 
+Ingeniería Bioquímica,5,Bioquímica del Nitrógeno y Regulación Genética,BQJ-1004,3-2-5 
+Ingeniería Bioquímica,5,Fisicoquímica,BQF-1011,3-2-5 
+Ingeniería Bioquímica,5,Desarrollo Sustentable,ACD-0908,2-3-5 
+Ingeniería Bioquímica,5,Instrumentación y Control,AEF-1039,3-2-5 
+
+Ingeniería Bioquímica,6,Operaciones Unitarias I,BQJ-1017,4-2-6 
+Ingeniería Bioquímica,6,Fenómenos de Transporte II,BQJ-1009,4-2-6 
+Ingeniería Bioquímica,6,Microbiología,AEM-1050,2-4-6 
+Ingeniería Bioquímica,6,Seguridad e Higiene,BQW-1024,2-0-2 
+Ingeniería Bioquímica,6,Cinética Química y Biológica,BQF-1005,3-2-5 
+Ingeniería Bioquímica,6,Taller de Investigación I,ACA-0909,0-4-4 
+
+Ingeniería Bioquímica,7,Taller de Investigación II,ACA-0910,0-4-4 
+Ingeniería Bioquímica,7,Operaciones Unitarias III,BQJ-1019,4-2-6 
+Ingeniería Bioquímica,7,Operaciones Unitarias II,BQJ-1018,4-2-6 
+Ingeniería Bioquímica,7,Ingeniería de Biorreactores,BQF-1012,3-2-5 
+Ingeniería Bioquímica,7,Fisiotecnia Vegetal,BTD-2302,2-3-5 
+Ingeniería Bioquímica,7,Biología Molecular,BTG-2301,3-3-6 
+
+Ingeniería Bioquímica,8,Ingeniería de Proyectos,BQC-1014,2-2-4 
+Ingeniería Bioquímica,8,Ingeniería y Gestión Ambiental,BQF-1016,3-2-5 
+Ingeniería Bioquímica,8,Ingeniería de Procesos,BQF-1013,3-2-5 
+Ingeniería Bioquímica,8,Ingeniería Metabólica,BTD-2305,2-3-5 
+Ingeniería Bioquímica,8,Biorremediación,BTG-2303,3-3-6 
+
+Ingeniería Bioquímica,9,Formulación y Evaluación de Proyectos,AEF-1029,2-3-5 
+Ingeniería Bioquímica,9,Temas Selectos de Biotecnología,BTQ-2304,1-2-3 
+Ingeniería Bioquímica,9,Servicio Social,,10 
+Ingeniería Bioquímica,9,Actividades Complementarias,,5 
+
+
+
+Ingeniería en Innovación Agrícola Sustentable,1,Álgebra Lineal,ACF-0903,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,1,Química,AEF-1056,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,1,Taller de Ética,ACH-2307,0-4-4
+Ingeniería en Innovación Agrícola Sustentable,1,Biología,ASF-1004,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,1,Tecnologías de la Información,AEQ-1064,1-2-3
+Ingeniería en Innovación Agrícola Sustentable,1,Fundamentos de Investigación,ACC-0906,2-2-4
+
+Ingeniería en Innovación Agrícola Sustentable,2,Cálculo Diferencial,ACF-2301,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,2,Química Analítica,ASF-1019,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,2,Elementos de Mecánica de Sólidos,ASQ-1023,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,2,Elementos de Termodinámica,ASF-1009,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,2,Botánica Aplicada,ASF-1006,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,2,Estadística,ASF-1010,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,2,Métodos Estadísticos,ASF-1015,3-2-5
+
+Ingeniería en Innovación Agrícola Sustentable,3,Cálculo Integral,ACF-0902,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,3,Ecología,AEF-1017,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,3,Edafología,AEF-1019,1-2-3
+Ingeniería en Innovación Agrícola Sustentable,3,Bioquímica,AED-1006,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,3,Principios de Electromecánica,ASF-1018,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,3,Topografía,AEM-1066,2-4-6
+
+Ingeniería en Innovación Agrícola Sustentable,4,Hidráulica,AEF-1036,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,4,Agroclimatología,AEF-1001,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,4,Diseño Agrícola Asistido por Computadora,ASH-1018,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,4,Fisiología Vegetal,ASF-1012,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,4,Microbiología,AEF-1049,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,4,Base de Datos y Sistemas de Información Geográfica,ASC-1003,2-2-4
+
+Ingeniería en Innovación Agrícola Sustentable,5,Biología Molecular,ASF-1005,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,5,Nutrición Vegetal,ASF-1016,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,5,Diseños Experimentales,ASF-1016,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,5,Entomología,AED-1023,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,5,Fitopatología,AEJ-1028,4-2-6
+Ingeniería en Innovación Agrícola Sustentable,5,Sistemas de Riego Superficial,ASF-1022,3-2-5
+
+Ingeniería en Innovación Agrícola Sustentable,6,Desarrollo Comunitario,ASD-1007,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,6,Sistemas de Riego Presurizado,ASF-1021,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,6,Sistemas de Producción Agrícola,ASD-1020,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,6,Olericultura,ASF-1017,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,6,Introducción a la Agricultura Protegida,ASF-1014,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,6,Taller de Investigación I,ACA-0909,0-4-4
+
+Ingeniería en Innovación Agrícola Sustentable,7,Agronegocios I,ASD-1001,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,7,Inocuidad Alimentaria y Bioseguridad,ASC-1013,2-2-4
+Ingeniería en Innovación Agrícola Sustentable,7,Agroecología,AED-1002,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,7,Taller de Investigación II,ACA-0910,0-4-4
+Ingeniería en Innovación Agrícola Sustentable,7,Desarrollo Sustentable,ACD-0908,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,7,Materia de ESPECIALIDAD 1,,10
+
+Ingeniería en Innovación Agrícola Sustentable,8,Agronegocios II,ASD-1002,2-3-5
+Ingeniería en Innovación Agrícola Sustentable,8,Materia de ESPECIALIDAD 2,,10
+Ingeniería en Innovación Agrícola Sustentable,8,Fertirrigación,ASF-1011,3-2-5
+Ingeniería en Innovación Agrícola Sustentable,8,Materia de ESPECIALIDAD 3,,5
+Ingeniería en Innovación Agrícola Sustentable,8,Servicio Social,,10
+Ingeniería en Innovación Agrícola Sustentable,8,Actividades Complementarias,,5
+
+
+
+
+Ingeniería en Animación Digital y Efectos Visuales,1,El Emprendedor y la Innovación,AVD-1209,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,1,Diseño Industrial,AVB-1207,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,1,Introducción a las Producciones de Animación,AVD-1219,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,1,Taller de Ética,ACA-0907,0-4-4
+Ingeniería en Animación Digital y Efectos Visuales,1,Fundamentos de Programación,AED-1285,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,1,Álgebra Lineal,ACF-0903,3-2-5
+
+Ingeniería en Animación Digital y Efectos Visuales,2,Psicología del Comportamiento Humano,AVC-1227,2-2-4
+Ingeniería en Animación Digital y Efectos Visuales,2,Introducción al Modelado 3D,AVH-1220,1-3-4
+Ingeniería en Animación Digital y Efectos Visuales,2,Arte Digital,AVB-1202,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,2,Fundamentos de Investigación,ACC-0906,2-2-4
+Ingeniería en Animación Digital y Efectos Visuales,2,Programación Orientada a Objetos,AED-1286,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,2,Cálculo Diferencial,ACF-0901,3-2-5
+
+Ingeniería en Animación Digital y Efectos Visuales,3,Proyecto de Vida y Carrera,AVC-1226,2-2-4
+Ingeniería en Animación Digital y Efectos Visuales,3,Modelado 3D,AVB-1222,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,3,Diseño Artístico,AVB-1206,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,3,Física General,AVD-1212,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,3,Estructura de Datos,AVD-1210,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,3,Cálculo Integral,ACF-0902,3-2-5
+
+Ingeniería en Animación Digital y Efectos Visuales,4,Planeación de Negocios,AVC-1223,2-2-4
+Ingeniería en Animación Digital y Efectos Visuales,4,Texturas y Materiales,AVB-1230,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,4,Principios de Fotografía y Video,AVB-1224,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,4,Física Aplicada,AVD-1211,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,4,Infraestructura Computacional,AVD-1217,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,4,Matemáticas Discretas,AVF-1221,3-2-5
+
+Ingeniería en Animación Digital y Efectos Visuales,5,Fundamentos de Audio Digital,AVD-1215,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,5,Rigging,AVB-1228,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,5,Fundamentos de Animación,AVH-1214,1-3-4
+Ingeniería en Animación Digital y Efectos Visuales,5,Desarrollo Sustentable,ACD-0908,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,5,Programación de Gráficas por Computadora,AVD-1225,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,5,Cálculo Vectorial,ACF-0904,3-2-5
+
+Ingeniería en Animación Digital y Efectos Visuales,6,Dirección y Negociación,AVC-1205,2-2-4
+Ingeniería en Animación Digital y Efectos Visuales,6,Iluminación y Render,AVB-1216,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,6,Animación Avanzada,AVB-1201,1-4-5
+Ingeniería en Animación Digital y Efectos Visuales,6,Taller de Investigación I,ACA-0909,0-4-4
+Ingeniería en Animación Digital y Efectos Visuales,6,Simulación,AVD-1229,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,6,Ecuaciones Diferenciales,ACF-0905,3-2-5
+
+Ingeniería en Animación Digital y Efectos Visuales,7,Formulación y Evaluación de Proyectos,AVD-1213,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,7,Composición Digital,AVM-1203,2-4-6
+Ingeniería en Animación Digital y Efectos Visuales,7,Desarrollo de Proyectos en la Industria de la Animación,AVD-1204,2-3-5
+Ingeniería en Animación Digital y Efectos Visuales,7,Taller de Investigación II,ACA-0910,0-4-4
+Ingeniería en Animación Digital y Efectos Visuales,7,Especialidad 1,,3-4
+
+Ingeniería en Animación Digital y Efectos Visuales,8,Integración Empresarial,AVD-1218,2-2-4
+Ingeniería en Animación Digital y Efectos Visuales,8,Efectos Visuales,AVM-1208,2-4-6
+Ingeniería en Animación Digital y Efectos Visuales,8,Especialidad 2,,10
+
+
+
+Ingeniería en Sistemas Automotrices,1,Cálculo Diferencial,ACF-0901,3-2-5
+Ingeniería en Sistemas Automotrices,1,Taller de Ética,ACA-0907,0-4-4
+Ingeniería en Sistemas Automotrices,1,Fundamentos de Investigación,ACC-0906,2-2-4
+Ingeniería en Sistemas Automotrices,1,Programación Básica,SAC-1330,2-2-4
+Ingeniería en Sistemas Automotrices,1,Fundamentos de Dibujo,SAB-1317,1-4-5
+Ingeniería en Sistemas Automotrices,1,Química Aplicada a Sistemas Automotrices,SAC-1331,2-2-4
+
+Ingeniería en Sistemas Automotrices,2,Cálculo Integral,ACF-0902,3-2-5
+Ingeniería en Sistemas Automotrices,2,Álgebra Lineal,ACF-0903,3-2-5
+Ingeniería en Sistemas Automotrices,2,Programación Aplicada,SAC-1329,2-2-4
+Ingeniería en Sistemas Automotrices,2,Control Estadístico de Procesos Automotrices,SAD-1307,2-3-5
+Ingeniería en Sistemas Automotrices,2,Tecnología y Comportamiento de los Materiales,SAE-1333,3-1-4
+Ingeniería en Sistemas Automotrices,2,Metrología y Normalización,SAE-1326,3-1-4
+
+Ingeniería en Sistemas Automotrices,3,Cálculo Vectorial,ACF-0904,3-2-5
+Ingeniería en Sistemas Automotrices,3,Estática,SAE-1316,3-1-4
+Ingeniería en Sistemas Automotrices,3,Métodos Numéricos,SAC-1325,2-2-4
+Ingeniería en Sistemas Automotrices,3,Electricidad y Magnetismo,SAF-1311,3-2-5
+Ingeniería en Sistemas Automotrices,3,Termodinámica,SAC-1334,2-2-4
+Ingeniería en Sistemas Automotrices,3,Procesos de Manufactura de Elementos Automotrices,SAC-1328,2-2-4
+
+Ingeniería en Sistemas Automotrices,4,Ecuaciones Diferenciales,ACF-0905,3-2-5
+Ingeniería en Sistemas Automotrices,4,Mecánica de Materiales,SAF-1324,3-2-5
+Ingeniería en Sistemas Automotrices,4,Dinámica,SAE-1308,3-1-4
+Ingeniería en Sistemas Automotrices,4,Análisis de Circuitos Eléctricos,SAF-1302,3-2-5
+Ingeniería en Sistemas Automotrices,4,Mecánica de Fluidos,SAE-1323,3-1-4
+Ingeniería en Sistemas Automotrices,4,Habilidades Directivas,SAC-1319,2-2-4
+
+Ingeniería en Sistemas Automotrices,5,Máquinas Eléctricas,SAD-1322,2-3-5
+Ingeniería en Sistemas Automotrices,5,Diseño y Selección de Elementos de Máquinas,SAF-1310,3-2-5
+Ingeniería en Sistemas Automotrices,5,Análisis y Síntesis de Mecanismos,SAC-1303,2-2-4
+Ingeniería en Sistemas Automotrices,5,Electrónica Analógica,SAC-1312,2-2-4
+Ingeniería en Sistemas Automotrices,5,Transferencia de Calor,SAC-1336,2-2-4
+Ingeniería en Sistemas Automotrices,5,Electrónica Digital,SAF-1314,3-2-5
+
+Ingeniería en Sistemas Automotrices,6,Desarrollo Sustentable,ACD-0908,2-3-5
+Ingeniería en Sistemas Automotrices,6,Tópicos de Tribología para Sistemas Automotrices,SAC-1335,2-2-4
+Ingeniería en Sistemas Automotrices,6,Instrumentación,SAC-1321,2-2-4
+Ingeniería en Sistemas Automotrices,6,Control,SAF-1306,3-2-5
+Ingeniería en Sistemas Automotrices,6,Motores de Combustión Interna,SAG-1327,3-3-6
+Ingeniería en Sistemas Automotrices,6,Administración de Sistemas Automotrices,SAC-1301,2-2-4
+
+Ingeniería en Sistemas Automotrices,7,Taller de Investigación I,ACA-0909,0-4-4
+Ingeniería en Sistemas Automotrices,7,Circuitos Neumáticos e Hidráulicos,SAC-1305,2-2-4
+Ingeniería en Sistemas Automotrices,7,Electrónica de Potencia,SAC-1313,2-2-4
+Ingeniería en Sistemas Automotrices,7,Elementos Automotrices,SAC-1315,2-2-4
+Ingeniería en Sistemas Automotrices,7,Gestión de la Calidad Automotriz,SAF-1318,3-2-5
+Ingeniería en Sistemas Automotrices,7,Ingeniería de Costos Automotrices,SAD-1320,2-3-5
+
+Ingeniería en Sistemas Automotrices,8,Taller de Investigación II,ACA-0910,0-4-4
+Ingeniería en Sistemas Automotrices,8,Diseño e Ingeniería Asistido por Computadora,SAM-1309,2-4-6
+Ingeniería en Sistemas Automotrices,8,Automatización Industrial,SAD-1304,2-3-5
+Ingeniería en Sistemas Automotrices,8,Especialidad,,3-2-5
+Ingeniería en Sistemas Automotrices,8,Residencia Profesional (Inicio),,10
+
+Ingeniería en Sistemas Automotrices,9,Seminario de Titulación,SAQ-1332,1-2-3
