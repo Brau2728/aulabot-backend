@@ -229,4 +229,4 @@ def generar_respuesta(mensaje, user_id, general, carreras, materias):
 
     # --- 5. FALLBACK TOTAL (Si Gemini tampoco sabe) ---
     registrar_ignorancia(mensaje_limpio) 
-    return "Mmm, esa no me la sé ni yo. 😅 Pero ya anoté tu duda para investigarla."
+    return "Mmm, esa no me la sé ni yo. 😅 Pero ya anoté tu duda para investigarla!."
